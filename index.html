@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="theme-color" content="#C8962A">
 <link rel="manifest" href="manifest.json">
-<title>Chit Manager</title>
+<title>Ratna Chits</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -74,7 +74,7 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.brand-mark svg { width: 16px; height: 16px; }
+.brand-mark svg { width: 24px; height: 24px; }
 .brand-name {
   font-family: 'Playfair Display', serif;
   font-size: 18px; font-weight: 600; color: var(--ink);
@@ -92,20 +92,103 @@ html, body {
 }
 .back-btn.on { display: flex; }
 
-/* ── NAV ── */
+/* ── BOTTOM NAV ── */
 .nav {
-  display: flex; background: var(--cream);
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px; flex-shrink: 0; gap: 4px;
+  display: flex; background: white;
+  border-top: 1px solid var(--border);
+  padding: 0; flex-shrink: 0;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 300;
+  box-shadow: 0 -4px 20px rgba(28,26,23,0.08);
+  height: 64px;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .nav-item {
-  padding: 14px 16px; font-size: 12px; font-weight: 700;
-  color: var(--ink3); cursor: pointer; border-bottom: 2px solid transparent;
-  letter-spacing: 0.8px; text-transform: uppercase;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 8px 4px; font-size: 10px; font-weight: 700;
+  color: var(--ink4); cursor: pointer; border-top: 2px solid transparent;
+  letter-spacing: 0.4px; text-transform: uppercase;
   transition: color 0.2s, border-color 0.2s;
-  white-space: nowrap;
+  white-space: nowrap; background: none; border-right: none; border-left: none; border-bottom: none;
 }
-.nav-item.on { color: var(--ink); border-bottom-color: var(--gold); }
+.nav-item .nav-icon {
+  width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; transition: background 0.2s, transform 0.15s;
+}
+.nav-item.on { color: var(--ink); }
+.nav-item.on .nav-icon { background: var(--gold-pale); transform: translateY(-1px); }
+.nav-item.on svg { color: var(--gold); }
+.nav-item svg { width: 18px; height: 18px; color: var(--ink4); transition: color 0.2s; }
+
+/* ── PIE CHART ── */
+.pie-chart-wrap {
+  display: flex; align-items: center; gap: 20px; padding: 8px 0;
+}
+.pie-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.pie-legend-item { display: flex; align-items: center; gap: 8px; }
+.pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.pie-legend-label { font-size: 12px; font-weight: 700; color: var(--ink2); flex: 1; }
+.pie-legend-pct { font-size: 12px; font-weight: 800; color: var(--ink); }
+
+/* ── INTEREST LOAN CARDS ── */
+.loan-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r); margin-bottom: 12px;
+  box-shadow: var(--shadow-sm); overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+.loan-card:active { transform: scale(0.985); }
+.loan-card.closed { opacity: 0.7; }
+.loan-card-top {
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.loan-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 600; color: var(--ink);
+}
+.loan-sub { font-size: 11px; color: var(--ink3); margin-top: 3px; font-weight: 500; }
+.loan-card-body { padding: 14px 18px; }
+.loan-balance-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--cream); border-radius: 10px; padding: 10px 14px;
+  margin-bottom: 10px;
+}
+.loan-balance-label { font-size: 10px; font-weight: 800; color: var(--ink4); text-transform: uppercase; letter-spacing: 0.5px; }
+.loan-balance-val { font-size: 16px; font-weight: 800; }
+.loan-balance-row.principal .loan-balance-val { color: var(--ink); }
+.loan-balance-row.interest .loan-balance-val { color: var(--amber); }
+.loan-balance-row.net .loan-balance-val { color: var(--red); }
+.loan-balance-row.net.clear .loan-balance-val { color: var(--green); }
+.loan-card-foot {
+  padding: 11px 18px; background: var(--cream);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+/* Due tab segment toggle */
+.seg-toggle {
+  display: flex; background: var(--cream2); border-radius: 10px;
+  padding: 3px; margin-bottom: 16px; gap: 2px;
+}
+.seg-btn {
+  flex: 1; padding: 8px 6px; border-radius: 8px; border: none;
+  font-size: 11px; font-weight: 800; cursor: pointer; font-family: inherit;
+  color: var(--ink4); background: transparent; transition: all 0.18s;
+  letter-spacing: 0.3px;
+}
+.seg-btn.on { background: white; color: var(--ink); box-shadow: var(--shadow-sm); }
+
+/* Interest insights badge */
+.ins-section-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px; margin-bottom: 14px;
+}
+.ins-section-badge.chits { background: var(--gold-pale); color: var(--gold); border: 1px solid var(--gold-border); }
+.ins-section-badge.loans { background: var(--amber-pale); color: var(--amber); border: 1px solid rgba(200,118,42,0.25); }
+.ins-section-badge.combined { background: var(--cream2); color: var(--ink2); border: 1px solid var(--border2); }
 
 /* ── SEARCH BAR ── */
 .search-bar-wrap {
@@ -136,11 +219,11 @@ html, body {
 .search-clear.on { display: block; }
 
 /* ── SCROLL ── */
-.scroll { flex: 1; overflow-y: auto; padding: 16px 20px 100px; -webkit-overflow-scrolling: touch; }
+.scroll { flex: 1; overflow-y: auto; padding: 16px 20px 120px; -webkit-overflow-scrolling: touch; }
 
 /* ── FAB ── */
 .fab {
-  position: fixed; bottom: 28px; right: 22px;
+  position: fixed; bottom: 80px; right: 22px;
   width: 52px; height: 52px; border-radius: 50%;
   background: var(--ink); color: var(--gold-light);
   border: none; font-size: 24px;
@@ -665,7 +748,7 @@ option { background: white; }
 
 /* ── TOAST ── */
 .toast {
-  position: fixed; bottom: 96px; left: 50%;
+  position: fixed; bottom: 80px; left: 50%;
   transform: translateX(-50%) translateY(10px);
   background: var(--ink); color: white;
   padding: 10px 20px; border-radius: 25px;
@@ -902,11 +985,14 @@ option { background: white; }
   <div class="topbar">
     <div class="topbar-brand">
       <div class="brand-mark">
-        <svg viewBox="0 0 16 16" fill="none">
-          <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" fill="#F5C842"/>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="12" cy="16.5" rx="6.5" ry="2.2" fill="#C8962A" opacity="0.45"/>
+          <ellipse cx="12" cy="13.5" rx="6.5" ry="2.2" fill="#C8962A" opacity="0.7"/>
+          <ellipse cx="12" cy="10.5" rx="6.5" ry="2.2" fill="#F5C842"/>
+          <text x="12" y="13.5" text-anchor="middle" dominant-baseline="middle" font-size="5" font-weight="900" fill="#1C1A17" font-family="serif">₹</text>
         </svg>
       </div>
-      <span class="brand-name">Chit <span>Manager</span></span>
+      <span class="brand-name">Ratna <span>Chits</span></span>
     </div>
     <div class="topbar-actions">
       <button class="back-btn" id="back-btn" onclick="goBack()">← Back</button>
@@ -916,10 +1002,36 @@ option { background: white; }
   </div>
 
   <div class="nav" id="main-nav">
-    <div class="nav-item on" data-tab="chits" onclick="switchTab('chits')">Chits</div>
-    <div class="nav-item" data-tab="members" onclick="switchTab('members')">Members</div>
-    <div class="nav-item" data-tab="due" onclick="switchTab('due')">Due</div>
-    <div class="nav-item" data-tab="insights" onclick="switchTab('insights')">Insights</div>
+    <div class="nav-item on" data-tab="chits" onclick="switchTab('chits')">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
+      </div>
+      Chits
+    </div>
+    <div class="nav-item" data-tab="interest" onclick="switchTab('interest')">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      Interest
+    </div>
+    <div class="nav-item" data-tab="members" onclick="switchTab('members')">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      Members
+    </div>
+    <div class="nav-item" data-tab="due" onclick="switchTab('due')">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      Due
+    </div>
+    <div class="nav-item" data-tab="insights" onclick="switchTab('insights')">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      Insights
+    </div>
   </div>
 
   <!-- BACKUP REMINDER BANNER -->
@@ -1041,7 +1153,7 @@ option { background: white; }
     <div class="sheet-title" id="mm-title">New <span>Member</span></div>
     <div class="fg"><label class="fl">Full Name</label><input class="fi" id="mm-name" placeholder="e.g. Ramesh Kumar"></div>
     <div class="fg"><label class="fl">Phone Number</label><input class="fi" id="mm-phone" type="tel" placeholder="9876543210"></div>
-    <div class="fg"><label class="fl">Notes</label><input class="fi" id="mm-notes" placeholder="Optional…"></div>
+    <div class="fg"><label class="fl">Notes</label><input class="fi" id="mm-notes" placeholder="e.g. Business owner, gold collateral…"></div>
     <div class="btn-row">
       <button class="btn btn-ghost" onclick="closeModal('member-modal')">Cancel</button>
       <button class="btn btn-dark" onclick="saveMember()">Save Member</button>
@@ -1085,6 +1197,21 @@ option { background: white; }
   </div>
 </div>
 
+<!-- MEMBER LOG MODAL -->
+<div class="overlay" id="mlog-modal" onclick="oClose(event,'mlog-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Add <span>Log Entry</span></div>
+    <div id="mlog-member-name" style="font-size:13px;font-weight:700;color:var(--ink3);margin-bottom:14px"></div>
+    <div class="fg"><label class="fl">Note</label><textarea class="fi" id="mlog-text" rows="3" style="resize:none;font-family:inherit" placeholder="e.g. Called 3 times, no response. Will follow up next week."></textarea></div>
+    <div class="fg"><label class="fl">Date</label><input class="fi" id="mlog-date" type="date"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('mlog-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="saveLogEntry()">Add Entry</button>
+    </div>
+  </div>
+</div>
+
 <!-- MEMBER WHATSAPP MODAL -->
 <div class="overlay" id="mwa-modal" onclick="oClose(event,'mwa-modal')">
   <div class="sheet">
@@ -1107,11 +1234,196 @@ option { background: white; }
   </div>
 </div>
 
+<!-- CHIT CLOSE MODAL -->
+<div class="overlay" id="chit-close-modal" onclick="oClose(event,'chit-close-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Close <span>Chit</span></div>
+    <div id="cclose-summary" style="background:var(--cream2);border-radius:var(--r-sm);padding:14px;margin-bottom:16px;font-size:12px;color:var(--ink2);line-height:1.9;font-weight:600"></div>
+    <div class="fg"><label class="fl">Close Date</label><input class="fi" id="cclose-date" type="date"></div>
+    <div class="fg"><label class="fl">Closing Note (optional)</label><input class="fi" id="cclose-note" placeholder="e.g. All slots won, chit completed…"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('chit-close-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="confirmCloseChit()" style="background:var(--green)">Close Chit</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOAN MODAL -->
+<div class="overlay" id="loan-modal" onclick="oClose(event,'loan-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="lm-title">New <span>Loan</span></div>
+    <div class="fg">
+      <label class="fl">Borrower</label>
+      <select class="fi" id="lm-member" style="color:var(--ink);font-weight:600">
+        <option value="">Select member…</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl">Principal (₹)</label><input class="fi" id="lm-principal" type="number" placeholder="e.g. 50000"></div>
+      <div class="fg"><label class="fl">Interest % / Month</label><input class="fi" id="lm-rate" type="number" step="0.1" placeholder="e.g. 2"></div>
+    </div>
+    <div class="fg"><label class="fl">Start Date</label><input class="fi" id="lm-start" type="date"></div>
+    <div class="fg"><label class="fl">Notes (optional)</label><input class="fi" id="lm-notes" placeholder="e.g. For business, against property…"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('loan-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="saveLoan()">Save Loan</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOAN PAYMENT MODAL -->
+<div class="overlay" id="lpay-modal" onclick="oClose(event,'lpay-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Record <span>Payment</span></div>
+    <div id="lpay-summary" style="background:var(--cream2);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--ink3);font-weight:600;line-height:1.8"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl">Amount Paid (₹)</label><input class="fi" id="lpay-amt" type="number" placeholder="0"></div>
+      <div class="fg"><label class="fl">Date</label><input class="fi" id="lpay-date" type="date"></div>
+    </div>
+    <div class="fg">
+      <label class="fl">Payment Mode</label>
+      <div class="pay-mode-grid" id="lpay-mode-grid">
+        <button class="pay-mode-btn" onclick="setLoanPayMode('gpay',this)">GPay</button>
+        <button class="pay-mode-btn" onclick="setLoanPayMode('phonepe',this)">PhonePe</button>
+        <button class="pay-mode-btn" onclick="setLoanPayMode('cash',this)">Cash</button>
+        <button class="pay-mode-btn" onclick="setLoanPayMode('netbanking',this)">NetBanking</button>
+        <button class="pay-mode-btn" onclick="setLoanPayMode('paytm',this)">Paytm</button>
+        <button class="pay-mode-btn" onclick="setLoanPayMode('others',this)">Others</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Note (optional)</label><input class="fi" id="lpay-note" placeholder="e.g. Partial interest for Oct…"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('lpay-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="saveLoanPayment()">Record Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOAN CLOSE MODAL -->
+<div class="overlay" id="lclose-modal" onclick="oClose(event,'lclose-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Close <span>Loan</span></div>
+    <div id="lclose-summary" style="background:var(--cream2);border-radius:var(--r-sm);padding:14px;margin-bottom:16px;font-size:12px;color:var(--ink2);line-height:1.9;font-weight:600"></div>
+    <div class="fg">
+      <label class="fl">Write-off Amount (₹) — optional relief</label>
+      <input class="fi" id="lclose-writeoff" type="number" placeholder="0 — waive interest">
+    </div>
+    <div class="fg"><label class="fl">Close Date</label><input class="fi" id="lclose-date" type="date"></div>
+    <div class="fg"><label class="fl">Closing Note (optional)</label><input class="fi" id="lclose-note" placeholder="e.g. Settled amicably…"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('lclose-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="confirmCloseLoan()" style="background:var(--green)">Settle Loan</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOAN DETAIL SHEET -->
+<div class="overlay" id="ldetail-modal" onclick="oClose(event,'ldetail-modal')">
+  <div class="sheet" style="max-height:88vh;overflow-y:auto">
+    <div class="sheet-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="sheet-title" style="margin-bottom:0" id="ldetail-title">Loan <span>Detail</span></div>
+      <button class="backup-btn" onclick="closeModal('ldetail-modal')" style="font-size:18px;color:var(--ink3)">✕</button>
+    </div>
+    <div id="ldetail-hero" style="background:var(--ink);border-radius:var(--r);padding:18px;margin-bottom:16px;color:white"></div>
+    <div id="ldetail-actions" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"></div>
+    <div class="slabel">Payment History</div>
+    <div id="ldetail-payments"></div>
+  </div>
+</div>
+
+<!-- BORROW MODAL -->
+<div class="overlay" id="borrow-modal" onclick="oClose(event,'borrow-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="bm-title">New <span>Borrowing</span></div>
+    <div class="fg">
+      <label class="fl">Lender Name</label>
+      <input class="fi" id="bm-lender" placeholder="e.g. Uncle Ravi, Suresh Garu…">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl">Amount (₹)</label><input class="fi" id="bm-principal" type="number" placeholder="e.g. 100000"></div>
+      <div class="fg"><label class="fl">Interest % / Month</label><input class="fi" id="bm-rate" type="number" step="0.1" placeholder="e.g. 1.5"></div>
+    </div>
+    <div class="fg"><label class="fl">Borrow Date</label><input class="fi" id="bm-start" type="date"></div>
+    <div class="fg"><label class="fl">Notes (optional)</label><input class="fi" id="bm-notes" placeholder="e.g. For wedding, against gold…"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('borrow-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="saveBorrowing()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- BORROW PAYMENT MODAL -->
+<div class="overlay" id="bpay-modal" onclick="oClose(event,'bpay-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Record <span>Repayment</span></div>
+    <div id="bpay-summary" style="background:var(--cream2);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--ink3);font-weight:600;line-height:1.8"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl">Amount Paid (₹)</label><input class="fi" id="bpay-amt" type="number" placeholder="0"></div>
+      <div class="fg"><label class="fl">Date</label><input class="fi" id="bpay-date" type="date"></div>
+    </div>
+    <div class="fg">
+      <label class="fl">Payment Mode</label>
+      <div class="pay-mode-grid" id="bpay-mode-grid">
+        <button class="pay-mode-btn" onclick="setBorrowPayMode('gpay',this)">GPay</button>
+        <button class="pay-mode-btn" onclick="setBorrowPayMode('phonepe',this)">PhonePe</button>
+        <button class="pay-mode-btn" onclick="setBorrowPayMode('cash',this)">Cash</button>
+        <button class="pay-mode-btn" onclick="setBorrowPayMode('netbanking',this)">NetBanking</button>
+        <button class="pay-mode-btn" onclick="setBorrowPayMode('paytm',this)">Paytm</button>
+        <button class="pay-mode-btn" onclick="setBorrowPayMode('others',this)">Others</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Note (optional)</label><input class="fi" id="bpay-note" placeholder="e.g. Interest for Dec…"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('bpay-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="saveBorrowPayment()">Record Repayment</button>
+    </div>
+  </div>
+</div>
+
+<!-- BORROW DETAIL SHEET -->
+<div class="overlay" id="bdetail-modal" onclick="oClose(event,'bdetail-modal')">
+  <div class="sheet" style="max-height:88vh;overflow-y:auto">
+    <div class="sheet-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="sheet-title" style="margin-bottom:0" id="bdetail-title">Borrowing <span>Detail</span></div>
+      <button class="backup-btn" onclick="closeModal('bdetail-modal')" style="font-size:18px;color:var(--ink3)">✕</button>
+    </div>
+    <div id="bdetail-hero" style="background:var(--blue);border-radius:var(--r);padding:18px;margin-bottom:16px;color:white"></div>
+    <div id="bdetail-actions" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"></div>
+    <div class="slabel">Repayment History</div>
+    <div id="bdetail-payments"></div>
+  </div>
+</div>
+
+<!-- BORROW CLOSE MODAL -->
+<div class="overlay" id="bclose-modal" onclick="oClose(event,'bclose-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Close <span>Borrowing</span></div>
+    <div id="bclose-summary" style="background:var(--cream2);border-radius:var(--r-sm);padding:14px;margin-bottom:16px;font-size:12px;color:var(--ink2);line-height:1.9;font-weight:600"></div>
+    <div class="fg"><label class="fl">Close Date</label><input class="fi" id="bclose-date" type="date"></div>
+    <div class="fg"><label class="fl">Note (optional)</label><input class="fi" id="bclose-note" placeholder="e.g. Fully repaid…"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('bclose-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="confirmCloseBorrowing()" style="background:var(--green)">Mark Settled</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════
-let DB = JSON.parse(localStorage.getItem('cm_v3') || '{"chits":[],"members":[]}');
+let DB = JSON.parse(localStorage.getItem('cm_v3') || '{"chits":[],"members":[],"loans":[],"borrowings":[]}');
+if (!DB.loans) DB.loans = [];
+if (!DB.borrowings) DB.borrowings = [];
 function persist() { localStorage.setItem('cm_v3', JSON.stringify(DB)); }
 function uid() { return Math.random().toString(36).slice(2, 10); }
 function fmt(n) { if (n === undefined || n === null || n === '') return '—'; return Number(n).toLocaleString('en-IN'); }
@@ -1127,7 +1439,7 @@ function ordinal(n) { const s=['th','st','nd','rd'],v=n%100; return n+(s[(v-20)%
 // ═══════════════════════════════════════════════
 // NAV STATE
 // ═══════════════════════════════════════════════
-const S = { tab: 'chits', level: 'list', chitId: null, memberId: null, monthIdx: 0, query: '' };
+const S = { tab: 'chits', level: 'list', chitId: null, memberId: null, monthIdx: 0, query: '', dueSegment: 'all', interestSub: 'active', insightsSeg: 'combined', chitSub: 'active' };
 
 function switchTab(tab) {
   S.tab = tab; S.level = 'list'; S.chitId = null; S.memberId = null; S.query = '';
@@ -1169,7 +1481,11 @@ function goBack() {
 
 function render() {
   if (S.tab === 'chits') {
-    if (S.level === 'list') renderChitList();
+    if (S.level === 'list') {
+      // If shell already rendered (seg-toggle present), just refresh content
+      if (document.getElementById('chit-list-content')) renderChitListContent();
+      else renderChitList();
+    }
     else if (S.level === 'chit') { showSearchBar(false); renderChitDetail(); }
     else if (S.level === 'month') { showSearchBar(false); renderMonthDetail(); }
   } else if (S.tab === 'members') {
@@ -1179,12 +1495,19 @@ function render() {
     renderDue();
   } else if (S.tab === 'insights') {
     renderInsights();
+  } else if (S.tab === 'interest') {
+    if (document.getElementById('interest-content')) renderInterestContent();
+    else renderInterestList();
   }
 }
 
 function fabClick() {
   if (S.tab === 'members') openMemberModal();
   else if (S.tab === 'chits' && S.level === 'list') openChitModal();
+  else if (S.tab === 'interest') {
+    if (S.interestSub === 'borrowed') openBorrowModal();
+    else openLoanModal();
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -1304,17 +1627,40 @@ function initials(name) {
 // ═══════════════════════════════════════════════
 // CHIT LIST
 // ═══════════════════════════════════════════════
+function setChitSub(sub) {
+  S.chitSub = sub;
+  document.querySelectorAll('.chit-sub-btn').forEach(b => b.classList.toggle('on', b.dataset.sub === sub));
+  renderChitListContent();
+}
+
 function renderChitList() {
   const el = document.getElementById('scroll');
   document.getElementById('fab').classList.remove('off');
   showSearchBar(true);
+  if (!S.chitSub) S.chitSub = 'active';
+  el.innerHTML = `
+    <div class="seg-toggle" style="margin-bottom:14px">
+      <button class="chit-sub-btn seg-btn ${S.chitSub==='active'?'on':''}" data-sub="active" onclick="setChitSub('active')">Active</button>
+      <button class="chit-sub-btn seg-btn ${S.chitSub==='closed'?'on':''}" data-sub="closed" onclick="setChitSub('closed')">Closed</button>
+    </div>
+    <div id="chit-list-content"></div>
+  `;
+  renderChitListContent();
+}
+
+function renderChitListContent() {
+  const el = document.getElementById('chit-list-content');
+  if (!el) return;
   const q = S.query;
-  let chits = DB.chits;
+  const showClosed = S.chitSub === 'closed';
+  let chits = DB.chits.filter(c => showClosed ? c.status === 'closed' : c.status !== 'closed');
   if (q) chits = chits.filter(c => c.name.toLowerCase().includes(q) ||
     (c.slots || []).some(s => getMember(s.memberId).name.toLowerCase().includes(q)));
 
-  if (!DB.chits.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">🏦</div><div class="empty-title">No Chits Yet</div><div class="empty-desc">Tap + to create your first chit group.</div></div>`;
+  if (!DB.chits.filter(c => showClosed ? c.status === 'closed' : c.status !== 'closed').length) {
+    el.innerHTML = showClosed
+      ? `<div class="empty"><div class="empty-icon">✅</div><div class="empty-title">No Closed Chits</div><div class="empty-desc">Chits you close will appear here.</div></div>`
+      : `<div class="empty"><div class="empty-icon">🏦</div><div class="empty-title">No Chits Yet</div><div class="empty-desc">Tap + to create your first chit group.</div></div>`;
     return;
   }
   if (!chits.length) {
@@ -1323,45 +1669,43 @@ function renderChitList() {
   }
 
   el.innerHTML = chits.map(chit => {
+    const isClosed = chit.status === 'closed';
     const slots = chit.slots || [];
     const curIdx = currentMonthIdx(chit);
     const paid = slots.filter(s => getPayment(chit, s.id, curIdx).status === 'paid').length;
     const totalDue = slots.reduce((sum, s) => sum + slotDueAmount(chit, s.id), 0);
     const pct = slots.length ? Math.round(paid / slots.length * 100) : 0;
-    const winner = chit.winners?.[curIdx];
-    const winSlot = winner ? slots.find(s => s.id === winner.slotId) : null;
-    const winName = winSlot ? getMember(winSlot.memberId).name : null;
 
     return `
-    <div class="chit-card" onclick="openChitDetail('${chit.id}')">
+    <div class="chit-card${isClosed?' closed':''}" onclick="openChitDetail('${chit.id}')" style="${isClosed?'opacity:0.75':''}">
       <div class="chit-card-top">
         <div>
           <div class="chit-name">${chit.name}</div>
-          <div class="chit-sub">Month ${curIdx + 1} of ${chit.tenure || '?'} · ${slots.length} slot${slots.length !== 1 ? 's' : ''}</div>
+          <div class="chit-sub">${isClosed ? 'Closed ' + fmtDate(chit.closeDate) : 'Month ' + (curIdx + 1) + ' of ' + (chit.tenure || '?')} · ${slots.length} slot${slots.length !== 1 ? 's' : ''}</div>
         </div>
-        <span class="pill ${totalDue > 0 ? 'pill-red' : 'pill-green'}">${totalDue > 0 ? R(totalDue) + ' DUE' : 'CLEAR'}</span>
+        <span class="pill ${isClosed ? 'pill-neutral' : totalDue > 0 ? 'pill-red' : 'pill-green'}">${isClosed ? 'CLOSED' : totalDue > 0 ? R(totalDue) + ' DUE' : 'CLEAR'}</span>
       </div>
       <div class="prog-strip"><div class="prog-fill ${pct < 100 ? 'partial' : ''}" style="width:${pct}%"></div></div>
       <div class="chit-card-body">
         <div class="kv-row">
           <div class="kv"><div class="kv-label">Chit Amount</div><div class="kv-value gold">${R(chit.amount)}</div></div>
           <div class="kv"><div class="kv-label">Monthly</div><div class="kv-value">${R(chit.monthly)}</div></div>
-          <div class="kv"><div class="kv-label">This Month</div><div class="kv-value">${paid}/${slots.length} paid</div></div>
+          <div class="kv"><div class="kv-label">${isClosed ? 'Slots' : 'This Month'}</div><div class="kv-value">${isClosed ? slots.length + ' members' : paid + '/' + slots.length + ' paid'}</div></div>
         </div>
-        ${chit.brokerage > 0 ? `
-        <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:8px 12px">
-          <span style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:0.3px">BROKERAGE / MONTH</span>
-          <span style="font-size:15px;font-weight:800;color:var(--gold)">₹${Number(chit.brokerage).toLocaleString('en-IN')}</span>
-        </div>` : ''}
-        ${winName ? `<div style="margin-top:12px;font-size:12px;color:var(--ink3);font-weight:600">🏆 Current winner: <span style="color:var(--gold);font-weight:700">${winName}</span></div>` : ''}
       </div>
       <div class="chit-card-foot">
-        <span class="foot-meta">${chit.startDate ? 'Started ' + fmtDate(chit.startDate) : 'No start date'}</span>
+        <span class="foot-meta">${isClosed ? (chit.closeNote||'Chit completed') : (chit.startDate ? 'Started ' + fmtDate(chit.startDate) : 'No start date')}</span>
         <div class="icon-btns" onclick="event.stopPropagation()">
+          ${!isClosed ? `
           <button class="action-btn" onclick="openChitModal(DB.chits.find(c=>c.id==='${chit.id}'))">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             Edit
           </button>
+          <button class="action-btn" onclick="openCloseChitModal('${chit.id}')" style="color:var(--green);border-color:rgba(42,122,90,0.25);background:var(--green-pale)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Close
+          </button>` : `
+          <button class="action-btn" onclick="reopenChit('${chit.id}')" style="color:var(--blue);border-color:rgba(37,99,235,0.2);background:var(--blue-pale)">Reopen</button>`}
           <button class="action-btn danger" onclick="deleteChit('${chit.id}')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             Delete
@@ -1834,7 +2178,13 @@ function renderMemberHistory() {
       </button>
     </div>` : ''}
 
-    <div class="slabel">Payment History by Chit</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="slabel" style="margin:0">Member Log</div>
+      <button class="action-btn" style="margin:0 0 8px 0;color:var(--ink);border-color:var(--border)" onclick="openLogModal('${m.id}')">+ Add Entry</button>
+    </div>
+    <div id="member-log-section">${buildLogHTML(m)}</div>
+
+    <div class="slabel" style="margin-top:16px">Payment History by Chit</div>
     ${chitBlocks || '<div class="empty"><div class="empty-desc">This member has no chit slots yet.</div></div>'}
   `;
 }
@@ -1846,6 +2196,60 @@ function toggleHCB(ci) {
   const open = body.classList.toggle('open');
   head.classList.toggle('open', open);
   chev.textContent = open ? '⌄' : '›';
+}
+
+// ═══════════════════════════════════════════════
+// MEMBER LOG
+// ═══════════════════════════════════════════════
+let _logMemberId = null;
+
+function buildLogHTML(m) {
+  const log = (m.log || []).slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (!log.length) return `<div style="padding:16px 0;text-align:center;font-size:13px;color:var(--ink4);font-weight:500">No entries yet. Tap + Add Entry to start logging notes.</div>`;
+  return log.map((entry, i) => `
+    <div style="padding:12px 14px;background:white;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:8px;position:relative">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:700;color:var(--ink4);margin-bottom:5px">${fmtDate(entry.date)}</div>
+          <div style="font-size:13px;color:var(--ink);font-weight:500;line-height:1.5">${entry.text}</div>
+        </div>
+        <button onclick="deleteLogEntry('${m.id}','${entry.id}')" style="background:none;border:none;padding:2px 4px;cursor:pointer;color:var(--ink4);font-size:14px;flex-shrink:0;line-height:1">×</button>
+      </div>
+    </div>`).join('');
+}
+
+function openLogModal(memberId) {
+  _logMemberId = memberId;
+  const m = getMember(memberId);
+  document.getElementById('mlog-member-name').textContent = m.name;
+  document.getElementById('mlog-text').value = '';
+  document.getElementById('mlog-date').value = new Date().toISOString().split('T')[0];
+  openModal('mlog-modal');
+}
+
+function saveLogEntry() {
+  const text = document.getElementById('mlog-text').value.trim();
+  if (!text) { showToast('Enter a note'); return; }
+  const date = document.getElementById('mlog-date').value;
+  if (!date) { showToast('Enter a date'); return; }
+  const m = DB.members.find(x => x.id === _logMemberId);
+  if (!m) return;
+  if (!m.log) m.log = [];
+  m.log.push({ id: uid(), text, date });
+  persist(); closeModal('mlog-modal');
+  // Refresh just the log section if member detail is open
+  const logEl = document.getElementById('member-log-section');
+  if (logEl) logEl.innerHTML = buildLogHTML(m);
+  showToast('Log entry added');
+}
+
+function deleteLogEntry(memberId, entryId) {
+  const m = DB.members.find(x => x.id === memberId);
+  if (!m) return;
+  m.log = (m.log || []).filter(e => e.id !== entryId);
+  persist();
+  const logEl = document.getElementById('member-log-section');
+  if (logEl) logEl.innerHTML = buildLogHTML(m);
 }
 
 // ═══════════════════════════════════════════════
@@ -1969,10 +2373,18 @@ function openMemberWA(memberId) {
 }
 
 function sendMemberWA() {
-  const m = getMember(_waMemberId);
+  const modal = document.getElementById('mwa-modal');
   const msg = document.getElementById('mwa-edit').value.trim();
   if (!msg) { showToast('Message is empty'); return; }
-  const phone = (m.phone || '').replace(/\D/g, '');
+  // Loan WA uses phone stored in modal dataset; chit WA uses _waMemberId
+  let phone = '';
+  if (modal.dataset.mode === 'loan') {
+    phone = (modal.dataset.phone || '').replace(/\D/g, '');
+    modal.dataset.mode = '';
+  } else {
+    const m = getMember(_waMemberId);
+    phone = (m?.phone || '').replace(/\D/g, '');
+  }
   const base = phone ? `https://wa.me/91${phone}` : `https://wa.me/`;
   window.open(`${base}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
   closeModal('mwa-modal');
@@ -1980,17 +2392,38 @@ function sendMemberWA() {
 }
 
 // ═══════════════════════════════════════════════
-// DUE SUMMARY (clean — no analytics, no bulk WA)
+// DUE SUMMARY — Segmented: All / Chits / Loans
 // ═══════════════════════════════════════════════
+function setDueSeg(seg) {
+  S.dueSegment = seg;
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.toggle('on', b.dataset.seg === seg));
+  renderDueContent();
+}
+
 function renderDue() {
   document.getElementById('fab').classList.add('off');
   showSearchBar(true);
   const el = document.getElementById('scroll');
+  el.innerHTML = `
+    <div class="seg-toggle">
+      <button class="seg-btn ${S.dueSegment==='all'?'on':''}" data-seg="all" onclick="setDueSeg('all')">All</button>
+      <button class="seg-btn ${S.dueSegment==='chits'?'on':''}" data-seg="chits" onclick="setDueSeg('chits')">Chits</button>
+      <button class="seg-btn ${S.dueSegment==='loans'?'on':''}" data-seg="loans" onclick="setDueSeg('loans')">Loans</button>
+    </div>
+    <div id="due-content"></div>
+  `;
+  renderDueContent();
+}
+
+function renderDueContent() {
+  const el = document.getElementById('due-content');
+  if (!el) return;
   const q = S.query;
+  const seg = S.dueSegment;
 
-  const byPerson = {};
-  const byChit = [];
-
+  // ── CHIT dues ──
+  const chitByPerson = {};
+  const chitByChit = [];
   for (const chit of DB.chits) {
     let chitTotal = 0;
     const memberDueMap = {};
@@ -2003,103 +2436,161 @@ function renderDue() {
     }
     for (const [mid, due] of Object.entries(memberDueMap)) {
       const m = getMember(mid);
-      if (!byPerson[mid]) byPerson[mid] = { name: m.name, phone: m.phone || '', totalDue: 0, chitBreakdown: [], memberId: mid };
-      byPerson[mid].totalDue += due;
-      byPerson[mid].chitBreakdown.push({ chitName: chit.name, due });
+      if (!chitByPerson[mid]) chitByPerson[mid] = { name: m.name, phone: m.phone || '', totalDue: 0, chitBreakdown: [], memberId: mid };
+      chitByPerson[mid].totalDue += due;
+      chitByPerson[mid].chitBreakdown.push({ chitName: chit.name, due });
     }
-    if (chitTotal > 0) {
-      byChit.push({
-        name: chit.name, total: chitTotal,
-        persons: Object.entries(memberDueMap).map(([mid, due]) => ({ name: getMember(mid).name, due }))
-      });
-    }
+    if (chitTotal > 0) chitByChit.push({ name: chit.name, total: chitTotal, persons: Object.entries(memberDueMap).map(([mid2, due2]) => ({ name: getMember(mid2).name, due: due2 })) });
+  }
+  const chitGrand = Object.values(chitByPerson).reduce((s, p) => s + p.totalDue, 0);
+
+  // ── LOAN dues ──
+  const loanByPerson = {};
+  for (const loan of (DB.loans || [])) {
+    if (loan.status === 'closed') continue;
+    const m = getMember(loan.memberId);
+    const accruedInterest = loanAccruedInterest(loan);
+    const totalPaid = (loan.payments || []).reduce((s, p) => s + Number(p.amount), 0);
+    const interestDue = Math.max(0, accruedInterest - totalPaid);
+    if (interestDue <= 0) continue;
+    if (!loanByPerson[loan.memberId]) loanByPerson[loan.memberId] = { name: m.name, phone: m.phone || '', memberId: loan.memberId, loans: [] };
+    loanByPerson[loan.memberId].loans.push({ loanName: loan.notes || (R(loan.principal) + ' @ ' + loan.rate + '%'), principal: Number(loan.principal), interestDue, loanId: loan.id });
+  }
+  const loanGrand = Object.values(loanByPerson).reduce((s, p) => s + p.loans.reduce((a, l) => a + l.interestDue, 0), 0);
+  const combinedGrand = chitGrand + loanGrand;
+
+  let chitPersons = Object.values(chitByPerson).sort((a, b) => b.totalDue - a.totalDue);
+  let chitChits = [...chitByChit].sort((a, b) => b.total - a.total);
+  let loanPersons = Object.values(loanByPerson).sort((a, b) => {
+    const aT = a.loans.reduce((s, l) => s + l.interestDue, 0);
+    const bT = b.loans.reduce((s, l) => s + l.interestDue, 0);
+    return bT - aT;
+  });
+  if (q) {
+    chitPersons = chitPersons.filter(p => p.name.toLowerCase().includes(q));
+    chitChits = chitChits.filter(c => c.name.toLowerCase().includes(q) || c.persons.some(p => p.name.toLowerCase().includes(q)));
+    loanPersons = loanPersons.filter(p => p.name.toLowerCase().includes(q));
   }
 
-  const grandTotal = Object.values(byPerson).reduce((s, p) => s + p.totalDue, 0);
+  const heroAmt = seg === 'chits' ? chitGrand : seg === 'loans' ? loanGrand : combinedGrand;
+  const heroSub = seg === 'chits' ? chitPersons.length + ' people · chits only'
+    : seg === 'loans' ? loanPersons.length + ' people · interest loans'
+    : 'Chits + Loans combined';
 
-  if (grandTotal === 0) {
-    el.innerHTML = `
-      <div class="due-hero">
-        <div class="due-hero-label">Total Outstanding</div>
-        <div class="due-hero-amt clear">₹0</div>
-        <div class="due-hero-sub">All payments are clear 🎉</div>
-      </div>`;
+  if (heroAmt === 0) {
+    el.innerHTML = '<div class="due-hero" style="margin-top:0"><div class="due-hero-label">Outstanding</div><div class="due-hero-amt clear">₹0</div><div class="due-hero-sub">All clear 🎉</div></div>';
     return;
   }
 
-  let persons = Object.values(byPerson).sort((a, b) => b.totalDue - a.totalDue);
-  let chits = byChit.sort((a, b) => b.total - a.total);
-  if (q) {
-    persons = persons.filter(p => p.name.toLowerCase().includes(q));
-    chits = chits.filter(c => c.name.toLowerCase().includes(q) || c.persons.some(p => p.name.toLowerCase().includes(q)));
-  }
-
-  const personHTML = persons.map((p, i) => `
+  const chitPersonHTML = chitPersons.map((p, i) => `
     <div class="due-person-row">
-      <div class="dpr-head" onclick="toggleDPR(${i})">
+      <div class="dpr-head" onclick="toggleDPR('cp${i}')">
         <div class="dpr-left">
           <div class="ava sm">${initials(p.name)}</div>
-          <div>
-            <div class="dpr-name">${p.name}</div>
-            <div class="dpr-count">${p.chitBreakdown.length} chit${p.chitBreakdown.length !== 1 ? 's' : ''} · tap to expand</div>
-          </div>
+          <div><div class="dpr-name">${p.name}</div><div class="dpr-count">${p.chitBreakdown.length} chit${p.chitBreakdown.length !== 1 ? 's' : ''} · tap to expand</div></div>
         </div>
         <div style="display:flex;align-items:center;gap:8px" onclick="event.stopPropagation()">
-          ${p.phone ? `
-          <button class="action-btn" style="color:var(--wa);border-color:rgba(37,211,102,0.3);background:var(--wa-pale);margin:0" onclick="openMemberWA('${p.memberId}')">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Remind
-          </button>` : ''}
+          ${p.phone ? `<button class="action-btn" style="color:var(--wa);border-color:rgba(37,211,102,0.3);background:var(--wa-pale);margin:0" onclick="openMemberWA('${p.memberId}')">Remind</button>` : ''}
           <div class="dpr-amount">${R(p.totalDue)}</div>
         </div>
       </div>
-      <div class="dpr-body" id="dpr-${i}">
-        ${p.chitBreakdown.map(c => `
-          <div class="dpr-line">
-            <span class="dpr-line-name">${c.chitName}</span>
-            <span class="dpr-line-amt">${R(c.due)}</span>
-          </div>`).join('')}
+      <div class="dpr-body" id="dpr-cp${i}">
+        ${p.chitBreakdown.map(c => `<div class="dpr-line"><span class="dpr-line-name">${c.chitName}</span><span class="dpr-line-amt">${R(c.due)}</span></div>`).join('')}
       </div>
     </div>`).join('');
 
-  const chitHTML = chits.map(c => `
+  const chitChitHTML = chitChits.map(c => `
     <div class="due-chit-block">
-      <div class="dcb-head">
-        <div class="dcb-name">${c.name}</div>
-        <div class="dcb-total">${R(c.total)}</div>
-      </div>
-      ${c.persons.map(p => `
-        <div class="dcb-line">
-          <span class="dcb-person">${p.name}</span>
-          <span class="dcb-amt">${R(p.due)}</span>
-        </div>`).join('')}
+      <div class="dcb-head"><div class="dcb-name">${c.name}</div><div class="dcb-total">${R(c.total)}</div></div>
+      ${c.persons.map(p => `<div class="dcb-line"><span class="dcb-person">${p.name}</span><span class="dcb-amt">${R(p.due)}</span></div>`).join('')}
     </div>`).join('');
+
+  const loanPersonHTML = loanPersons.map((p, i) => {
+    const totalInterestDue = p.loans.reduce((s, l) => s + l.interestDue, 0);
+    return `
+    <div class="due-person-row">
+      <div class="dpr-head" onclick="toggleDPR('lp${i}')">
+        <div class="dpr-left">
+          <div class="ava sm" style="background:var(--amber);color:white">${initials(p.name)}</div>
+          <div><div class="dpr-name">${p.name}</div><div class="dpr-count">${p.loans.length} loan${p.loans.length !== 1 ? 's' : ''} · tap to expand</div></div>
+        </div>
+        <div class="dpr-amount" style="color:var(--amber)">${R(totalInterestDue)}</div>
+      </div>
+      <div class="dpr-body" id="dpr-lp${i}">
+        ${p.loans.map(l => `<div class="dpr-line"><span class="dpr-line-name">${l.loanName}</span><div style="text-align:right"><div class="dpr-line-amt" style="color:var(--amber)">Int: ${R(l.interestDue)}</div><div style="font-size:10px;color:var(--ink4);font-weight:600">Principal: ${R(l.principal)}</div></div></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  const showChits = (seg === 'all' || seg === 'chits');
+  const showLoans = (seg === 'all' || seg === 'loans');
 
   el.innerHTML = `
-    <div class="due-hero">
-      <div class="due-hero-label">Total Outstanding</div>
-      <div class="due-hero-amt">${R(grandTotal)}</div>
-      <div class="due-hero-sub">Across all chits · ${Object.keys(byPerson).length} people</div>
+    <div class="due-hero" style="margin-top:0">
+      <div class="due-hero-label">Outstanding${seg==='all'?' — Combined':seg==='chits'?' — Chits':' — Loans'}</div>
+      <div class="due-hero-amt">${R(heroAmt)}</div>
+      <div class="due-hero-sub">${heroSub}</div>
     </div>
-    ${q && !persons.length && !chits.length ? `<div class="no-results"><span>🔍</span>No matches for "<strong>${q}</strong>"</div>` : ''}
-    ${persons.length ? `<div class="slabel">By Person</div>${personHTML}` : ''}
-    ${chits.length ? `<div class="slabel">By Chit</div>${chitHTML}` : ''}
+    ${showChits && chitPersons.length ? `${seg==='all'?'<div class="ins-section-badge chits">Chit Dues</div>':''}<div class="slabel">By Person</div>${chitPersonHTML}${chitChits.length?'<div class="slabel">By Chit</div>'+chitChitHTML:''}` : ''}
+    ${showLoans && loanPersons.length ? `${seg==='all'?'<div class="ins-section-badge loans" style="margin-top:8px">Loan Interest Due</div>':''}<div class="slabel">Interest Outstanding</div>${loanPersonHTML}` : ''}
+    ${seg === 'all' || seg === 'loans' ? (() => {
+      const activeBorrows = (DB.borrowings||[]).filter(b => b.status !== 'closed');
+      const youOweTotal = activeBorrows.reduce((s,b) => s + borrowInterestDue(b), 0);
+      if (!youOweTotal) return '';
+      const rows = activeBorrows.filter(b => borrowInterestDue(b) > 0).map(b => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:white;border:1px solid rgba(37,99,235,0.15);border-radius:var(--r-sm);margin-bottom:6px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">To: ${b.lender}</div>
+            <div style="font-size:11px;color:var(--ink3);margin-top:2px;font-weight:500">${R(b.principal)} @ ${b.rate}%/mo</div>
+          </div>
+          <div style="font-size:15px;font-weight:800;color:var(--blue)">${R(borrowInterestDue(b))}</div>
+        </div>`).join('');
+      return `<div class="ins-section-badge" style="background:var(--blue-pale);color:var(--blue);border:1px solid rgba(37,99,235,0.2);margin-top:16px">You Owe</div>
+        <div class="slabel">Your Interest Obligations</div>
+        <div style="background:var(--blue-pale);border:1px solid rgba(37,99,235,0.15);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;font-weight:700;color:var(--blue)">Total Interest You Owe</span>
+          <span style="font-size:16px;font-weight:800;color:var(--blue)">${R(youOweTotal)}</span>
+        </div>
+        ${rows}`;
+    })() : ''}
   `;
 }
+
 
 // ═══════════════════════════════════════════════
 // INSIGHTS TAB
 // ═══════════════════════════════════════════════
+function setInsightsSeg(seg) {
+  S.insightsSeg = seg;
+  document.querySelectorAll('.ins-seg-btn').forEach(b => b.classList.toggle('on', b.dataset.seg === seg));
+  renderInsightsContent();
+}
+
 function renderInsights() {
   document.getElementById('fab').classList.add('off');
   showSearchBar(false);
   const el = document.getElementById('scroll');
+  el.innerHTML = `
+    <div class="seg-toggle" style="margin-bottom:16px">
+      <button class="ins-seg-btn seg-btn ${S.insightsSeg==='combined'?'on':''}" data-seg="combined" onclick="setInsightsSeg('combined')">Combined</button>
+      <button class="ins-seg-btn seg-btn ${S.insightsSeg==='chits'?'on':''}" data-seg="chits" onclick="setInsightsSeg('chits')">Chits</button>
+      <button class="ins-seg-btn seg-btn ${S.insightsSeg==='interest'?'on':''}" data-seg="interest" onclick="setInsightsSeg('interest')">Interest</button>
+    </div>
+    <div id="insights-content"></div>
+  `;
+  renderInsightsContent();
+}
 
-  // Collect stats
+function renderInsightsContent() {
+  const el = document.getElementById('insights-content');
+  if (!el) return;
+  const seg = S.insightsSeg;
+
+  // ── Compute all stats ──
   const modeCounts = {};
   let totalDaysArr = [];
   const byPerson = {};
-  let totalCollected = 0, totalDue = 0, totalSlots = 0, paidCount = 0, partialCount = 0, unpaidCount = 0;
+  let totalCollected = 0, totalDue = 0, totalSlots = 0, paidCount = 0, partialCount = 0;
   const chitStats = [];
 
   for (const chit of DB.chits) {
@@ -2107,264 +2598,309 @@ function renderInsights() {
     totalSlots += slots.length;
     let chitCollected = 0, chitDue = 0;
     const curIdx = currentMonthIdx(chit);
-
     for (const s of slots) {
       const due = slotDueAmount(chit, s.id);
-      totalDue += due;
-      chitDue += due;
-      if (!byPerson[s.memberId]) byPerson[s.memberId] = { totalDue: 0, totalPaid: 0 };
+      totalDue += due; chitDue += due;
+      if (!byPerson[s.memberId]) byPerson[s.memberId] = { totalDue: 0 };
       byPerson[s.memberId].totalDue += due;
-
       for (let i = 0; i <= curIdx; i++) {
         const exp = slotExpected(chit, s, i);
         const pay = getPayment(chit, s.id, i);
         if (pay.status === 'paid') { chitCollected += exp; totalCollected += exp; paidCount++; }
         else if (pay.status === 'partial') { chitCollected += (Number(pay.paidAmount)||0); totalCollected += (Number(pay.paidAmount)||0); partialCount++; }
-        else if (i <= curIdx) unpaidCount++;
       }
     }
-
     const payments = chit.payments || {};
     for (const [key, pay] of Object.entries(payments)) {
-      if (pay.mode) modeCounts[pay.mode] = (modeCounts[pay.mode] || 0) + 1;
-      if (pay.date && pay.status === 'paid') {
-        const [idxStr] = key.split('_');
-        const monthDate = getMonthDate(chit, Number(idxStr));
-        if (monthDate) {
-          const diff = Math.round((new Date(pay.date) - monthDate) / 86400000);
-          if (diff >= 0 && diff <= 60) totalDaysArr.push(diff);
-        }
+      if (pay.mode) {
+        const [idxStr, slotId] = key.split('_');
+        const slot = (chit.slots||[]).find(s=>s.id===slotId);
+        let amt = 0;
+        if (pay.status === 'paid' && slot) amt = slotExpected(chit, slot, Number(idxStr));
+        else if (pay.status === 'partial') amt = Number(pay.paidAmount)||0;
+        if (amt > 0) modeCounts[pay.mode] = (modeCounts[pay.mode]||0) + amt;
       }
     }
-
     chitStats.push({ name: chit.name, collected: chitCollected, due: chitDue, slots: slots.length });
   }
 
   const grandTotal = totalCollected + totalDue;
   const collectionRate = grandTotal > 0 ? Math.round(totalCollected / grandTotal * 100) : 100;
-  const avgDays = totalDaysArr.length ? Math.round(totalDaysArr.reduce((a,b)=>a+b,0)/totalDaysArr.length) : null;
-  const totalPayments = Object.values(modeCounts).reduce((a,b)=>a+b,0);
+  const totalModeAmt = Object.values(modeCounts).reduce((a,b)=>a+b,0);
   const arrearsPeople = Object.values(byPerson).filter(p => p.totalDue > 0).length;
 
-  const modeOrder = ['gpay','paytm','phonepe','cash','netbanking','others'];
-  const modeNames = { gpay:'GPay', paytm:'Paytm', phonepe:'PhonePe', cash:'Cash', netbanking:'NetBanking', others:'Others' };
-  let modeHTML = '';
-  if (totalPayments > 0) {
-    modeHTML = modeOrder.filter(k => modeCounts[k]).sort((a,b) => (modeCounts[b]||0)-(modeCounts[a]||0))
-      .map(k => {
-        const pct = Math.round((modeCounts[k]/totalPayments)*100);
-        return `<div class="mode-bar">
-          <div class="mode-bar-label"><span>${modeNames[k]}</span><span>${pct}% (${modeCounts[k]})</span></div>
-          <div class="mode-bar-track"><div class="mode-bar-fill ${k}" style="width:${pct}%"></div></div>
-        </div>`;
-      }).join('');
+  // Loan stats
+  const activeLoans = (DB.loans||[]).filter(l=>l.status!=='closed');
+  const allLoans = DB.loans||[];
+  const activeBorrows = (DB.borrowings||[]).filter(b=>b.status!=='closed');
+  const totalLentPrincipal = activeLoans.reduce((s,l)=>s+Number(l.principal),0);
+  const totalBorrowedPrincipal = activeBorrows.reduce((s,b)=>s+Number(b.principal),0);
+  const totalLoanIntCollected = allLoans.reduce((s,l)=>s+loanTotalPaid(l),0);
+  const totalLoanIntDue = activeLoans.reduce((s,l)=>s+loanInterestDue(l),0);
+  const totalBorrowIntPaid = (DB.borrowings||[]).reduce((s,b)=>s+borrowTotalPaid(b),0);
+  const totalBorrowIntOwed = activeBorrows.reduce((s,b)=>s+borrowInterestDue(b),0);
+  const totalWriteOff = (DB.loans||[]).filter(l=>l.status==='closed').reduce((s,l)=>s+(Number(l.writeOff)||0),0);
+  const netCapital = totalLentPrincipal - totalBorrowedPrincipal;
+
+  // ── Chit earnings by month (brokerage) ──
+  const chitEarningsByMonth = {};
+  for (const chit of DB.chits.filter(c=>c.brokerage>0)) {
+    const curIdx = currentMonthIdx(chit);
+    for (let i = 0; i <= curIdx; i++) {
+      const d = getMonthDate(chit, i);
+      if (!d) continue;
+      const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+      chitEarningsByMonth[key] = (chitEarningsByMonth[key]||0) + Number(chit.brokerage);
+    }
   }
 
-  const topChits = [...chitStats].sort((a,b) => b.due - a.due).slice(0,5);
+  // ── Loan interest collected by month ──
+  const loanEarningsByMonth = {};
+  for (const loan of allLoans) {
+    for (const p of (loan.payments||[])) {
+      if (!p.date) continue;
+      const d = new Date(p.date);
+      const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+      loanEarningsByMonth[key] = (loanEarningsByMonth[key]||0) + Number(p.amount);
+    }
+  }
 
-  if (!DB.chits.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">No Data Yet</div><div class="empty-desc">Insights will appear once you add chits and record payments.</div></div>`;
+  // ── Borrow interest paid out by month ──
+  const borrowPaidByMonth = {};
+  for (const borrow of (DB.borrowings||[])) {
+    for (const p of (borrow.payments||[])) {
+      if (!p.date) continue;
+      const d = new Date(p.date);
+      const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+      borrowPaidByMonth[key] = (borrowPaidByMonth[key]||0) + Number(p.amount);
+    }
+  }
+
+  // All months union
+  const allMonthKeys = [...new Set([...Object.keys(chitEarningsByMonth), ...Object.keys(loanEarningsByMonth), ...Object.keys(borrowPaidByMonth)])].sort();
+  const last12 = allMonthKeys.slice(-12);
+
+  // ── PIE CHART helper ──
+  function buildPie(modeCts, totalAmt) {
+    if (!totalAmt) return '';
+    const modeOrder = ['gpay','paytm','phonepe','cash','netbanking','others'];
+    const modeNames2 = {gpay:'GPay',paytm:'Paytm',phonepe:'PhonePe',cash:'Cash',netbanking:'NetBanking',others:'Others'};
+    const PIE_COLORS2 = {gpay:'#4285F4',paytm:'#00BAF2',phonepe:'#5F259F',cash:'#2A7A5A',netbanking:'#C8762A',others:'#8C8680'};
+    const entries = modeOrder.filter(k=>modeCts[k]).sort((a,b)=>(modeCts[b]||0)-(modeCts[a]||0));
+    const R2=54,CX=64,CY=64,SIZE=128; let sa=-Math.PI/2,sl='',li='';
+    entries.forEach(k=>{
+      const pct=modeCts[k]/totalAmt; const angle=pct*2*Math.PI; const ea=sa+angle;
+      const x1=CX+R2*Math.cos(sa),y1=CY+R2*Math.sin(sa),x2=CX+R2*Math.cos(ea),y2=CY+R2*Math.sin(ea);
+      const la=angle>Math.PI?1:0; const col=PIE_COLORS2[k]||'#aaa';
+      sl+=`<path d="M${CX},${CY} L${x1.toFixed(2)},${y1.toFixed(2)} A${R2},${R2} 0 ${la},1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${col}" stroke="white" stroke-width="2"/>`;
+      const pd=Math.round(pct*100);
+      const ad=modeCts[k]>=100000?'₹'+(modeCts[k]/100000).toFixed(1)+'L':modeCts[k]>=1000?'₹'+(modeCts[k]/1000).toFixed(0)+'K':R(modeCts[k]);
+      li+=`<div class="pie-legend-item"><div class="pie-dot" style="background:${col}"></div><span class="pie-legend-label">${modeNames2[k]}</span><span class="pie-legend-pct">${pd}% · ${ad}</span></div>`;
+      sa=ea;
+    });
+    return `<div class="analytics-label" style="margin-bottom:14px">By Amount · Total ${totalAmt>=100000?'₹'+(totalAmt/100000).toFixed(1)+'L':R(totalAmt)}</div><div class="pie-chart-wrap"><svg viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}" style="flex-shrink:0">${sl}</svg><div class="pie-legend">${li}</div></div>`;
+  }
+
+  // ── NET EARNINGS LINE CHART (chit earnings + loan interest collected - borrow interest paid) ──
+  function buildNetChart(months) {
+    const vals = months.map(k => (chitEarningsByMonth[k]||0) + (loanEarningsByMonth[k]||0) - (borrowPaidByMonth[k]||0));
+    if (months.length < 2 || vals.every(v=>v===0)) return '';
+    const W=300,H=90,PAD={l:8,r:8,t:18,b:22};
+    const iW=W-PAD.l-PAD.r,iH=H-PAD.t-PAD.b;
+    const maxV=Math.max(...vals,1); const minV=Math.min(...vals,0); const range=maxV-minV||1;
+    const n=months.length; let svg='';
+    const pts=months.map((k,i)=>{
+      const v=vals[i];
+      const x=PAD.l+(i/(n-1))*iW;
+      const y=PAD.t+iH-((v-minV)/range)*iH;
+      const label=new Date(k+'-01').toLocaleDateString('en-IN',{month:'short',year:'2-digit'}).replace(' ','-');
+      return {x,y,v,label};
+    });
+    // Zero line if negatives exist
+    if(minV<0){
+      const zy=PAD.t+iH-((0-minV)/range)*iH;
+      svg+=`<line x1="${PAD.l}" y1="${zy}" x2="${W-PAD.r}" y2="${zy}" stroke="rgba(176,58,46,0.25)" stroke-width="1" stroke-dasharray="3,2"/>`;
+    }
+    // Shaded area
+    const area=`M${pts[0].x},${PAD.t+iH} `+pts.map(p=>`L${p.x},${p.y}`).join(' ')+` L${pts[n-1].x},${PAD.t+iH} Z`;
+    svg+=`<path d="${area}" fill="rgba(42,122,90,0.10)" stroke="none"/>`;
+    svg+=`<path d="M${pts.map(p=>p.x+','+p.y).join(' L')}" fill="none" stroke="#2A7A5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    [0,Math.floor((n-1)/2),n-1].forEach(i=>{
+      const p=pts[i];
+      svg+=`<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="${p.v>=0?'#2A7A5A':'#B03A2E'}" stroke="white" stroke-width="1.5"/>`;
+      if(p.v!==0){const disp=p.v>=1000?(p.v/1000).toFixed(1)+'k':p.v<=-1000?(p.v/1000).toFixed(1)+'k':String(p.v); svg+=`<text x="${p.x}" y="${p.y-6}" text-anchor="middle" font-size="9" font-weight="700" fill="${p.v>=0?'#2A7A5A':'#B03A2E'}">${disp}</text>`;}
+      svg+=`<text x="${p.x}" y="${H-3}" text-anchor="middle" font-size="9" fill="#8C8680" font-weight="600">${p.label}</text>`;
+    });
+    svg+=`<line x1="${PAD.l}" y1="${PAD.t+iH}" x2="${W-PAD.r}" y2="${PAD.t+iH}" stroke="rgba(28,26,23,0.06)" stroke-width="1"/>`;
+    return `<div class="analytics-card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="analytics-label">Net Earnings Trend</div>
+        <span style="font-size:10px;font-weight:600;color:var(--ink4)">Chit + Int Earned − Int Paid</span>
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;overflow:visible">${svg}</svg>
+    </div>`;
+  }
+
+  // ── SINGLE LINE CHART (chit earnings only) ──
+  function buildChitChart(months) {
+    const valid = months.filter(k=>chitEarningsByMonth[k]>0);
+    if (valid.length < 2) return '';
+    const W=300,H=80,PAD={l:8,r:8,t:18,b:22};
+    const iW=W-PAD.l-PAD.r,iH=H-PAD.t-PAD.b;
+    const maxV=Math.max(...months.map(k=>chitEarningsByMonth[k]||0),1); const n=months.length;
+    const pts=months.map((k,i)=>({x:PAD.l+(i/(n-1))*iW,y:PAD.t+iH-((chitEarningsByMonth[k]||0)/maxV)*iH,val:chitEarningsByMonth[k]||0,label:new Date(k+'-01').toLocaleDateString('en-IN',{month:'short',year:'2-digit'}).replace(' ','-')}));
+    let svg=`<path d="M${pts[0].x},${PAD.t+iH} ${pts.map(p=>`L${p.x},${p.y}`).join(' ')} L${pts[n-1].x},${PAD.t+iH} Z" fill="rgba(200,150,42,0.12)"/>`;
+    svg+=`<path d="M${pts.map(p=>`${p.x},${p.y}`).join(' L')}" fill="none" stroke="#C8962A" stroke-width="2" stroke-linecap="round"/>`;
+    [0,Math.floor((n-1)/2),n-1].forEach(i=>{
+      svg+=`<circle cx="${pts[i].x}" cy="${pts[i].y}" r="3.5" fill="#C8962A" stroke="white" stroke-width="1.5"/>`;
+      if(pts[i].val) svg+=`<text x="${pts[i].x}" y="${pts[i].y-6}" text-anchor="middle" font-size="9" font-weight="700" fill="#C8962A">${pts[i].val>=1000?(pts[i].val/1000).toFixed(0)+'k':pts[i].val}</text>`;
+      svg+=`<text x="${pts[i].x}" y="${H-3}" text-anchor="middle" font-size="9" fill="#8C8680" font-weight="600">${pts[i].label}</text>`;
+    });
+    svg+=`<line x1="${PAD.l}" y1="${PAD.t+iH}" x2="${W-PAD.r}" y2="${PAD.t+iH}" stroke="rgba(28,26,23,0.06)" stroke-width="1"/>`;
+    return `<div class="analytics-card" style="margin-bottom:12px"><div class="analytics-label" style="margin-bottom:10px">Earnings Trend</div><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;overflow:visible">${svg}</svg></div>`;
+  }
+
+  if (!DB.chits.length && !allLoans.length && !(DB.borrowings||[]).length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">No Data Yet</div><div class="empty-desc">Insights appear once you add chits or loans.</div></div>`;
     return;
   }
 
-  el.innerHTML = `
-    <div class="slabel">Collection Overview</div>
-    <div class="analytics-grid">
-      <div class="analytics-card">
-        <div class="analytics-label">Total Collected</div>
-        <div class="analytics-value" style="color:var(--green)">${R(totalCollected)}</div>
-        <div class="analytics-sub">across all chits</div>
-      </div>
-      <div class="analytics-card">
-        <div class="analytics-label">Outstanding</div>
-        <div class="analytics-value" style="color:${totalDue > 0 ? 'var(--red)' : 'var(--green)'}">${totalDue > 0 ? R(totalDue) : '₹0'}</div>
-        <div class="analytics-sub">${arrearsPeople} people in arrears</div>
-      </div>
-      <div class="analytics-card">
-        <div class="analytics-label">Collection Rate</div>
-        <div class="analytics-value">${collectionRate}%</div>
-        <div class="analytics-sub">${paidCount} payments complete</div>
-      </div>
-      <div class="analytics-card">
-        <div class="analytics-label">Active Slots</div>
-        <div class="analytics-value">${totalSlots}</div>
-        <div class="analytics-sub">${DB.chits.length} chit${DB.chits.length !== 1 ? 's' : ''} · ${DB.members.length} members</div>
-      </div>
-      ${avgDays !== null ? `
-      <div class="analytics-card">
-        <div class="analytics-label">Avg. Days to Pay</div>
-        <div class="analytics-value">${avgDays}d</div>
-        <div class="analytics-sub">from due date</div>
-      </div>` : ''}
-      ${partialCount > 0 ? `
-      <div class="analytics-card">
-        <div class="analytics-label">Partial Payments</div>
-        <div class="analytics-value" style="color:var(--amber)">${partialCount}</div>
-        <div class="analytics-sub">slots partially paid</div>
-      </div>` : ''}
-    </div>
+  if (seg === 'combined') {
+    const totalChitEarnings = Object.values(chitEarningsByMonth).reduce((a,b)=>a+b,0);
+    const combinedEarnings = totalCollected + totalLoanIntCollected;
+    const combinedDue = totalDue + totalLoanIntDue;
+    const thisYear = new Date().getFullYear();
+    const ytdChit = Object.entries(chitEarningsByMonth).filter(([k])=>k.startsWith(thisYear)).reduce((s,[,v])=>s+v,0);
+    const ytdLoan = Object.entries(loanEarningsByMonth).filter(([k])=>k.startsWith(thisYear)).reduce((s,[,v])=>s+v,0);
+    const ytdBorrow = Object.entries(borrowPaidByMonth).filter(([k])=>k.startsWith(thisYear)).reduce((s,[,v])=>s+v,0);
+    const ytdNet = ytdChit + ytdLoan - ytdBorrow;
+    const totalNetEarnings = totalCollected + totalLoanIntCollected - totalBorrowIntPaid;
 
-    ${modeHTML ? `
-    <div class="slabel">Payment Modes</div>
-    <div class="analytics-card" style="margin-bottom:20px">
-      <div class="analytics-label" style="margin-bottom:14px">Based on ${totalPayments} recorded payments</div>
-      ${modeHTML}
-    </div>` : ''}
-
-    ${topChits.some(c => c.due > 0) ? `
-    <div class="slabel">Outstanding by Chit</div>
-    ${topChits.filter(c => c.due > 0).map(c => `
-      <div class="due-chit-block">
-        <div class="dcb-head">
-          <div class="dcb-name">${c.name}</div>
-          <div class="dcb-total" style="color:var(--red)">${R(c.due)}</div>
+    // ── WA interest reminder HTML ──
+    const loanMembersWithDue = (DB.loans||[]).filter(l=>l.status!=='closed'&&loanInterestDue(l)>0).reduce((acc,l)=>{
+      const m=getMember(l.memberId);
+      if(!m||!m.phone) return acc;
+      if(!acc[l.memberId]) acc[l.memberId]={name:m.name,phone:m.phone,memberId:l.memberId,loans:[]};
+      acc[l.memberId].loans.push(l);
+      return acc;
+    },{});
+    const waRows = Object.values(loanMembersWithDue).map(p=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:white;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:6px">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink)">${p.name}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">${p.loans.length} loan${p.loans.length>1?'s':''} · Int due: <strong style="color:var(--red)">${R(p.loans.reduce((s,l)=>s+loanInterestDue(l),0))}</strong></div>
         </div>
-        <div class="dcb-line">
-          <span class="dcb-person">Collected</span>
-          <span class="dcb-amt" style="color:var(--green)">${R(c.collected)}</span>
-        </div>
-      </div>`).join('')}` : ''}
+        <button class="action-btn" style="color:var(--wa);border-color:rgba(37,211,102,0.3);background:var(--wa-pale);margin:0" onclick="openLoanWA('${p.memberId}')">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Remind
+        </button>
+      </div>`).join('');
 
-    ${DB.chits.some(c => c.brokerage > 0) ? (() => {
-      const chitsWithBrokerage = DB.chits.filter(c => c.brokerage > 0);
-      const totalMonthlyBrokerage = chitsWithBrokerage.reduce((s, c) => s + Number(c.brokerage), 0);
-
-      // Build ordered month entries: { key: 'YYYY-MM', label: 'Oct-24', val, date }
-      const monthMapRaw = {};
-      for (const chit of chitsWithBrokerage) {
-        const curIdx = currentMonthIdx(chit);
-        for (let i = 0; i <= curIdx; i++) {
-          const d = getMonthDate(chit, i);
-          if (!d) continue;
-          const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-          if (!monthMapRaw[key]) {
-            monthMapRaw[key] = {
-              label: d.toLocaleDateString('en-IN',{month:'short',year:'2-digit'}).replace(' ','-'),
-              val: 0, date: d
-            };
-          }
-          monthMapRaw[key].val += Number(chit.brokerage);
-        }
-      }
-
-      const allMonths = Object.entries(monthMapRaw).sort(([a],[b])=>a.localeCompare(b));
-      const totalEarned = allMonths.reduce((s,[,m])=>s+m.val,0);
-
-      // YTD: sum from Jan 1 of current year
-      const thisYear = new Date().getFullYear();
-      const ytd = allMonths.filter(([k])=>k.startsWith(thisYear)).reduce((s,[,m])=>s+m.val,0);
-
-      // Line chart — last 12 months, SVG
-      const chartMonths = allMonths.slice(-12);
-      const W = 300, H = 80, PAD = { l:8, r:8, t:18, b:22 };
-      const innerW = W - PAD.l - PAD.r;
-      const innerH = H - PAD.t - PAD.b;
-      const maxV = Math.max(...chartMonths.map(([,m])=>m.val), 1);
-      const n = chartMonths.length;
-
-      let svgContent = '';
-      if (n >= 2) {
-        // Draw gridline at top only
-        const points = chartMonths.map(([,m], i) => {
-          const x = PAD.l + (i / (n-1)) * innerW;
-          const y = PAD.t + innerH - (m.val / maxV) * innerH;
-          return { x, y, val: m.val, label: m.label };
-        });
-
-        // Shaded area under line
-        const areaPath = `M${points[0].x},${PAD.t+innerH} ` +
-          points.map(p=>`L${p.x},${p.y}`).join(' ') +
-          ` L${points[n-1].x},${PAD.t+innerH} Z`;
-
-        // Line path
-        const linePath = `M` + points.map(p=>`${p.x},${p.y}`).join(' L');
-
-        svgContent += `<path d="${areaPath}" fill="rgba(200,150,42,0.12)" stroke="none"/>`;
-        svgContent += `<path d="${linePath}" fill="none" stroke="#C8962A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
-
-        // Show labels & dots only at first, middle, last — and anywhere val changes
-        const labelIdxs = new Set([0, Math.floor((n-1)/2), n-1]);
-        // also mark any month where value differs from previous
-        points.forEach((p,i) => { if (i > 0 && p.val !== points[i-1].val) { labelIdxs.add(i); labelIdxs.add(i-1); } });
-
-        points.forEach((p, i) => {
-          const showLabel = labelIdxs.has(i);
-          // dot
-          svgContent += `<circle cx="${p.x}" cy="${p.y}" r="${showLabel?3.5:2}" fill="${showLabel?'#C8962A':'#C8962A'}" stroke="white" stroke-width="1.5"/>`;
-          if (showLabel) {
-            // value above dot
-            svgContent += `<text x="${p.x}" y="${p.y-6}" text-anchor="middle" font-size="9" font-weight="700" fill="#C8962A">${p.val>=1000?(p.val/1000).toFixed(0)+'k':p.val}</text>`;
-            // month label below axis
-            svgContent += `<text x="${p.x}" y="${H-3}" text-anchor="middle" font-size="9" fill="#8C8680" font-weight="600">${p.label}</text>`;
-          }
-        });
-
-        // top gridline
-        svgContent += `<line x1="${PAD.l}" y1="${PAD.t}" x2="${W-PAD.r}" y2="${PAD.t}" stroke="rgba(28,26,23,0.06)" stroke-width="1"/>`;
-        svgContent += `<line x1="${PAD.l}" y1="${PAD.t+innerH}" x2="${W-PAD.r}" y2="${PAD.t+innerH}" stroke="rgba(28,26,23,0.06)" stroke-width="1"/>`;
-      }
-
-      const chitBreakdown = chitsWithBrokerage.map(c => `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
-          <div style="font-size:12px;font-weight:700;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">${c.name}</div>
-          <div style="font-size:13px;font-weight:800;color:var(--gold);flex-shrink:0">₹${Number(c.brokerage).toLocaleString('en-IN')}/mo</div>
-        </div>`).join('');
-
-      return `
-      <div class="slabel">Brokerage Earnings</div>
-      <div class="analytics-grid" style="margin-bottom:12px">
-        <div class="analytics-card">
-          <div class="analytics-label">Monthly</div>
-          <div class="analytics-value" style="color:var(--gold)">₹${totalMonthlyBrokerage.toLocaleString('en-IN')}</div>
-          <div class="analytics-sub">${chitsWithBrokerage.length} chit${chitsWithBrokerage.length!==1?'s':''} active</div>
-        </div>
-        <div class="analytics-card">
-          <div class="analytics-label">YTD ${thisYear}</div>
-          <div class="analytics-value" style="color:var(--gold)">₹${ytd.toLocaleString('en-IN')}</div>
-          <div class="analytics-sub">Jan–now</div>
-        </div>
-        <div class="analytics-card">
-          <div class="analytics-label">Total Earned</div>
-          <div class="analytics-value" style="color:var(--gold)">₹${totalEarned.toLocaleString('en-IN')}</div>
-          <div class="analytics-sub">since start</div>
-        </div>
+    el.innerHTML = `
+      <div class="slabel">Business Overview</div>
+      <div class="analytics-grid" style="margin-bottom:14px">
+        <div class="analytics-card"><div class="analytics-label">Net Earnings</div><div class="analytics-value" style="color:${totalNetEarnings>=0?'var(--green)':'var(--red)'}">${R(Math.abs(totalNetEarnings))}</div><div class="analytics-sub">${totalNetEarnings>=0?'net earned':'net loss'} · all time</div></div>
+        <div class="analytics-card"><div class="analytics-label">Total Outstanding</div><div class="analytics-value" style="color:${combinedDue>0?'var(--red)':'var(--green)'}">${R(combinedDue)}</div><div class="analytics-sub">Chits + Loan Interest</div></div>
+        <div class="analytics-card"><div class="analytics-label">YTD Net</div><div class="analytics-value" style="color:${ytdNet>=0?'var(--gold)':'var(--red)'}">${R(Math.abs(ytdNet))}</div><div class="analytics-sub">Jan–now · net</div></div>
+        <div class="analytics-card"><div class="analytics-label">Net Capital</div><div class="analytics-value" style="color:${netCapital>=0?'var(--ink)':'var(--red)'}">${R(Math.abs(netCapital))}</div><div class="analytics-sub">${netCapital>=0?'Net deployed':'Net borrowed'}</div></div>
       </div>
-
-      ${n >= 2 ? `
-      <div class="analytics-card" style="margin-bottom:12px">
-        <div class="analytics-label" style="margin-bottom:10px">Earnings Trend</div>
-        <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;overflow:visible">
-          ${svgContent}
-        </svg>
-      </div>` : ''}
-
-      <div class="analytics-card" style="margin-bottom:12px">
-        <div class="analytics-label" style="margin-bottom:12px">Calculate Between Dates</div>
+      ${buildNetChart(last12)}
+      <div class="analytics-card" style="margin-bottom:14px">
+        <div class="analytics-label" style="margin-bottom:12px">Calculate Earnings Between Dates</div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <input type="date" id="brk-from" class="fi" style="flex:1;min-width:110px;padding:8px 10px;font-size:12px">
+          <input type="date" id="comb-from" class="fi" style="flex:1;min-width:110px;padding:8px 10px;font-size:12px">
           <span style="font-size:12px;color:var(--ink4);font-weight:600">to</span>
-          <input type="date" id="brk-to" class="fi" style="flex:1;min-width:110px;padding:8px 10px;font-size:12px">
-          <button onclick="calcBrokerageRange()" class="btn btn-dark btn-sm" style="flex-shrink:0;margin-top:0">Calc</button>
+          <input type="date" id="comb-to" class="fi" style="flex:1;min-width:110px;padding:8px 10px;font-size:12px">
+          <button onclick="calcCombinedRange()" class="btn btn-dark btn-sm" style="flex-shrink:0;margin-top:0">Calc</button>
         </div>
-        <div id="brk-result" style="margin-top:12px;display:none;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:12px 14px">
-          <div style="font-size:10px;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Brokerage Earned</div>
-          <div id="brk-result-amt" style="font-size:22px;font-weight:800;color:var(--gold)"></div>
-          <div id="brk-result-sub" style="font-size:11px;color:var(--ink3);font-weight:500;margin-top:3px"></div>
-          <div id="brk-result-breakdown" style="margin-top:10px"></div>
+        <div id="comb-result" style="margin-top:12px;display:none;background:var(--green-pale);border:1px solid rgba(42,122,90,0.2);border-radius:8px;padding:12px 14px">
+          <div style="font-size:10px;font-weight:800;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Net Earnings in Range</div>
+          <div id="comb-result-amt" style="font-size:24px;font-weight:800;color:var(--green)"></div>
+          <div id="comb-result-sub" style="font-size:11px;color:var(--ink3);font-weight:500;margin-top:3px"></div>
+          <div id="comb-result-breakdown" style="margin-top:10px"></div>
         </div>
       </div>
-
-      <div class="analytics-card" style="margin-bottom:20px">
-        <div class="analytics-label" style="margin-bottom:4px">Per Chit</div>
-        ${chitBreakdown}
-      </div>`;
-    })() : ''}
-  `;
+      ${waRows ? `<div class="slabel">Interest Reminders</div>${waRows}` : ''}
+      ${totalModeAmt > 0 ? `<div class="slabel">Payment Modes</div><div class="analytics-card" style="margin-bottom:20px">${buildPie(modeCounts, totalModeAmt)}</div>` : ''}
+    `;
+  } else if (seg === 'chits') {
+    const topChits = [...chitStats].sort((a,b)=>b.due-a.due).slice(0,5);
+    const chitsWithEarnings = DB.chits.filter(c=>c.brokerage>0);
+    const totalMonthlyEarnings = chitsWithEarnings.reduce((s,c)=>s+Number(c.brokerage),0);
+    const totalEarned = Object.values(chitEarningsByMonth).reduce((a,b)=>a+b,0);
+    const thisYear = new Date().getFullYear();
+    const ytd = Object.entries(chitEarningsByMonth).filter(([k])=>k.startsWith(thisYear)).reduce((s,[,v])=>s+v,0);
+    el.innerHTML = `
+      <div class="slabel">Collection Overview</div>
+      <div class="analytics-grid" style="margin-bottom:14px">
+        <div class="analytics-card"><div class="analytics-label">Total Collected</div><div class="analytics-value" style="color:var(--green)">${R(totalCollected)}</div><div class="analytics-sub">across all chits</div></div>
+        <div class="analytics-card"><div class="analytics-label">Outstanding</div><div class="analytics-value" style="color:${totalDue>0?'var(--red)':'var(--green)'}">${R(totalDue)}</div><div class="analytics-sub">${arrearsPeople} in arrears</div></div>
+        <div class="analytics-card"><div class="analytics-label">Collection Rate</div><div class="analytics-value">${collectionRate}%</div><div class="analytics-sub">${paidCount} payments</div></div>
+        <div class="analytics-card"><div class="analytics-label">Active Slots</div><div class="analytics-value">${totalSlots}</div><div class="analytics-sub">${DB.chits.length} chit${DB.chits.length!==1?'s':''} · ${DB.members.length} members</div></div>
+        ${partialCount>0?`<div class="analytics-card analytics-wide"><div class="analytics-label">Partial Payments</div><div class="analytics-value" style="color:var(--amber)">${partialCount}</div><div class="analytics-sub">slots partially paid</div></div>`:''}
+      </div>
+      ${totalModeAmt>0?`<div class="slabel">Payment Modes</div><div class="analytics-card" style="margin-bottom:14px">${buildPie(modeCounts,totalModeAmt)}</div>`:''}
+      ${topChits.some(c=>c.due>0)?`<div class="slabel">Outstanding by Chit</div>${topChits.filter(c=>c.due>0).map(c=>`<div class="due-chit-block"><div class="dcb-head"><div class="dcb-name">${c.name}</div><div class="dcb-total" style="color:var(--red)">${R(c.due)}</div></div><div class="dcb-line"><span class="dcb-person">Collected</span><span class="dcb-amt" style="color:var(--green)">${R(c.collected)}</span></div></div>`).join('')}`:''}
+      ${chitsWithEarnings.length ? `
+        <div class="slabel">Chit Earnings</div>
+        <div class="analytics-grid" style="margin-bottom:12px">
+          <div class="analytics-card"><div class="analytics-label">Monthly</div><div class="analytics-value" style="color:var(--gold)">₹${totalMonthlyEarnings.toLocaleString('en-IN')}</div><div class="analytics-sub">${chitsWithEarnings.length} chit${chitsWithEarnings.length!==1?'s':''} active</div></div>
+          <div class="analytics-card"><div class="analytics-label">YTD ${thisYear}</div><div class="analytics-value" style="color:var(--gold)">${R(ytd)}</div><div class="analytics-sub">Jan–now</div></div>
+          <div class="analytics-card"><div class="analytics-label">Total Earned</div><div class="analytics-value" style="color:var(--gold)">${R(totalEarned)}</div><div class="analytics-sub">since start</div></div>
+        </div>
+        ${buildChitChart(last12)}
+        <div class="analytics-card" style="margin-bottom:12px">
+          <div class="analytics-label" style="margin-bottom:12px">Calculate Between Dates</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="date" id="brk-from" class="fi" style="flex:1;min-width:110px;padding:8px 10px;font-size:12px">
+            <span style="font-size:12px;color:var(--ink4);font-weight:600">to</span>
+            <input type="date" id="brk-to" class="fi" style="flex:1;min-width:110px;padding:8px 10px;font-size:12px">
+            <button onclick="calcBrokerageRange()" class="btn btn-dark btn-sm" style="flex-shrink:0;margin-top:0">Calc</button>
+          </div>
+          <div id="brk-result" style="margin-top:12px;display:none;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:12px 14px">
+            <div style="font-size:10px;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Earnings in Range</div>
+            <div id="brk-result-amt" style="font-size:22px;font-weight:800;color:var(--gold)"></div>
+            <div id="brk-result-sub" style="font-size:11px;color:var(--ink3);font-weight:500;margin-top:3px"></div>
+            <div id="brk-result-breakdown" style="margin-top:10px"></div>
+          </div>
+        </div>
+        <div class="analytics-card" style="margin-bottom:20px">
+          <div class="analytics-label" style="margin-bottom:4px">Per Chit</div>
+          ${chitsWithEarnings.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)"><div style="font-size:12px;font-weight:700;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">${c.name}</div><div style="font-size:13px;font-weight:800;color:var(--gold);flex-shrink:0">₹${Number(c.brokerage).toLocaleString('en-IN')}/mo</div></div>`).join('')}
+        </div>` : ''}
+    `;
+  } else {
+    // Interest segment
+    const thisYear = new Date().getFullYear();
+    const ytdLoan = Object.entries(loanEarningsByMonth).filter(([k])=>k.startsWith(thisYear)).reduce((s,[,v])=>s+v,0);
+    const totalLoanIntPaidAll = allLoans.reduce((s,l)=>s+loanTotalPaid(l),0);
+    el.innerHTML = `
+      <div class="slabel">Lending Overview</div>
+      <div class="analytics-grid" style="margin-bottom:14px">
+        <div class="analytics-card"><div class="analytics-label">Capital Lent</div><div class="analytics-value">${R(totalLentPrincipal)}</div><div class="analytics-sub">${activeLoans.length} active loans</div></div>
+        <div class="analytics-card"><div class="analytics-label">Interest Collected</div><div class="analytics-value" style="color:var(--green)">${R(totalLoanIntPaidAll)}</div><div class="analytics-sub">all time</div></div>
+        <div class="analytics-card"><div class="analytics-label">Int. Outstanding</div><div class="analytics-value" style="color:${totalLoanIntDue>0?'var(--red)':'var(--green)'}">${R(totalLoanIntDue)}</div><div class="analytics-sub">pending</div></div>
+        <div class="analytics-card"><div class="analytics-label">YTD ${thisYear}</div><div class="analytics-value" style="color:var(--gold)">${R(ytdLoan)}</div><div class="analytics-sub">interest collected</div></div>
+        ${totalWriteOff>0?`<div class="analytics-card"><div class="analytics-label">Written Off</div><div class="analytics-value" style="color:var(--ink3)">${R(totalWriteOff)}</div><div class="analytics-sub">goodwill relief</div></div>`:''}
+      </div>
+      ${(DB.borrowings||[]).length ? `
+      <div class="slabel">Borrowing Overview</div>
+      <div class="analytics-grid" style="margin-bottom:14px">
+        <div class="analytics-card"><div class="analytics-label">Capital Borrowed</div><div class="analytics-value" style="color:var(--blue)">${R(totalBorrowedPrincipal)}</div><div class="analytics-sub">${activeBorrows.length} active</div></div>
+        <div class="analytics-card"><div class="analytics-label">Int. Paid Out</div><div class="analytics-value" style="color:var(--ink)">${R(totalBorrowIntPaid)}</div><div class="analytics-sub">repaid to lenders</div></div>
+        <div class="analytics-card analytics-wide"><div class="analytics-label">Int. You Owe</div><div class="analytics-value" style="color:${totalBorrowIntOwed>0?'var(--red)':'var(--green)'}">${R(totalBorrowIntOwed)}</div><div class="analytics-sub">pending repayment</div></div>
+      </div>
+      <div class="analytics-grid" style="margin-bottom:14px">
+        <div class="analytics-card"><div class="analytics-label">Net Capital</div><div class="analytics-value" style="color:${netCapital>=0?'var(--ink)':'var(--red)'}">${R(Math.abs(netCapital))}</div><div class="analytics-sub">${netCapital>=0?'deployed net':'borrowed net'}</div></div>
+        <div class="analytics-card"><div class="analytics-label">Net Int. Flow</div><div class="analytics-value" style="color:${totalLoanIntCollected-totalBorrowIntPaid>=0?'var(--green)':'var(--red)'}">${R(Math.abs(totalLoanIntCollected-totalBorrowIntPaid))}</div><div class="analytics-sub">${totalLoanIntCollected-totalBorrowIntPaid>=0?'net earned':'net paid'}</div></div>
+      </div>` : ''}
+    `;
+  }
 }
 
 function toggleDPR(i) {
   const el = document.getElementById(`dpr-${i}`);
-  el.classList.toggle('open');
+  if (el) el.classList.toggle('open');
 }
 
 // ═══════════════════════════════════════════════
@@ -2414,7 +2950,99 @@ function calcBrokerageRange() {
 }
 
 // ═══════════════════════════════════════════════
-// CHIT MODAL — checklist member picker
+// COMBINED EARNINGS DATE RANGE CALCULATOR
+// ═══════════════════════════════════════════════
+function calcCombinedRange() {
+  const fromStr = document.getElementById('comb-from')?.value;
+  const toStr   = document.getElementById('comb-to')?.value;
+  const resultEl = document.getElementById('comb-result');
+  if (!fromStr || !toStr) { showToast('Pick both dates'); return; }
+  const from = new Date(fromStr); const to = new Date(toStr);
+  if (from > to) { showToast('From date must be before To date'); return; }
+  const fmtD = d => d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+
+  // Chit earnings: sum brokerage for months within range
+  let chitEarned = 0;
+  for (const chit of DB.chits.filter(c => c.brokerage > 0)) {
+    const curIdx = currentMonthIdx(chit);
+    for (let i = 0; i <= curIdx; i++) {
+      const d = getMonthDate(chit, i);
+      if (d && d >= from && d <= to) chitEarned += Number(chit.brokerage);
+    }
+  }
+
+  // Loan interest collected in range (payment date within range)
+  let loanEarned = 0;
+  for (const loan of (DB.loans||[])) {
+    for (const p of (loan.payments||[])) {
+      const d = p.date ? new Date(p.date) : null;
+      if (d && d >= from && d <= to) loanEarned += Number(p.amount);
+    }
+  }
+
+  // Borrow interest paid in range
+  let borrowPaid = 0;
+  for (const borrow of (DB.borrowings||[])) {
+    for (const p of (borrow.payments||[])) {
+      const d = p.date ? new Date(p.date) : null;
+      if (d && d >= from && d <= to) borrowPaid += Number(p.amount);
+    }
+  }
+
+  const net = chitEarned + loanEarned - borrowPaid;
+  const isNeg = net < 0;
+  document.getElementById('comb-result').style.background = isNeg ? 'var(--red-pale)' : 'var(--green-pale)';
+  document.getElementById('comb-result').style.borderColor = isNeg ? 'rgba(176,58,46,0.2)' : 'rgba(42,122,90,0.2)';
+  document.getElementById('comb-result').querySelector('div').style.color = isNeg ? 'var(--red)' : 'var(--green)';
+  document.getElementById('comb-result-amt').style.color = isNeg ? 'var(--red)' : 'var(--green)';
+  document.getElementById('comb-result-amt').textContent = (isNeg ? '−' : '') + '₹' + Math.abs(net).toLocaleString('en-IN');
+  document.getElementById('comb-result-sub').textContent = `${fmtD(from)} → ${fmtD(to)}`;
+  document.getElementById('comb-result-breakdown').innerHTML = `
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);font-weight:600;margin-top:4px"><span>Chit Earnings</span><span style="color:var(--gold);font-weight:700">+₹${chitEarned.toLocaleString('en-IN')}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);font-weight:600;margin-top:4px"><span>Loan Int. Collected</span><span style="color:var(--green);font-weight:700">+₹${loanEarned.toLocaleString('en-IN')}</span></div>
+    ${borrowPaid>0?`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);font-weight:600;margin-top:4px"><span>Borrow Int. Paid</span><span style="color:var(--red);font-weight:700">−₹${borrowPaid.toLocaleString('en-IN')}</span></div>`:''}
+  `;
+  resultEl.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════
+// LOAN WHATSAPP REMINDER
+// ═══════════════════════════════════════════════
+function openLoanWA(memberId) {
+  const m = getMember(memberId);
+  if (!m || !m.phone) { showToast('No phone number for this member'); return; }
+  const loans = (DB.loans||[]).filter(l => l.memberId === memberId && l.status !== 'closed');
+  if (!loans.length) { showToast('No active loans for this member'); return; }
+  const today = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+  const lines = [];
+  lines.push(`Namaste ${m.name} garu 🙏`);
+  lines.push('');
+  lines.push(`As of ${today}, the following interest is outstanding:`);
+  lines.push('');
+  for (const loan of loans) {
+    const accrued = loanAccruedInterest(loan);
+    const paid = loanTotalPaid(loan);
+    const due = Math.max(0, accrued - paid);
+    if (due <= 0) continue;
+    lines.push(`• Principal: ₹${Number(loan.principal).toLocaleString('en-IN')} @ ${loan.rate}%/mo`);
+    if (loan.notes) lines.push(`  (${loan.notes})`);
+    lines.push(`  Interest due: *₹${due.toLocaleString('en-IN')}*`);
+    const lastPay = [...(loan.payments||[])].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+    if (lastPay) lines.push(`  Last payment: ₹${Number(lastPay.amount).toLocaleString('en-IN')} on ${fmtDate(lastPay.date)}`);
+    lines.push('');
+  }
+  lines.push('Please arrange payment at your earliest convenience.');
+  lines.push('');
+  lines.push('_Ratna Chits, Guntur_');
+
+  const modal = document.getElementById('mwa-modal');
+  document.getElementById('mwa-name').textContent = m.name;
+  document.getElementById('mwa-edit').value = lines.join('\n');
+  // Temporarily store phone for send
+  modal.dataset.phone = m.phone;
+  modal.dataset.mode = 'loan';
+  openModal('mwa-modal');
+}
 // ═══════════════════════════════════════════════
 let _eid = null, _slots = [];
 
@@ -2610,6 +3238,51 @@ function deleteChit(id) {
   persist(); render(); showToast('Chit deleted');
 }
 
+let _ccloseId = null;
+function openCloseChitModal(chitId) {
+  _ccloseId = chitId;
+  const chit = DB.chits.find(c => c.id === chitId);
+  if (!chit) return;
+  const slots = chit.slots || [];
+  const totalCollected = slots.reduce((s, sl) => {
+    for (let i = 0; i < (Number(chit.tenure)||0); i++) {
+      const p = getPayment(chit, sl.id, i);
+      if (p.status === 'paid') s += slotExpected(chit, sl, i);
+      else if (p.status === 'partial') s += Number(p.paidAmount)||0;
+    }
+    return s;
+  }, 0);
+  const totalDue = slots.reduce((s, sl) => s + slotDueAmount(chit, sl.id), 0);
+  document.getElementById('cclose-summary').innerHTML =
+    `Chit: <strong>${chit.name}</strong><br>
+     Amount: <strong>${R(chit.amount)}</strong> · ${slots.length} slots · ${chit.tenure} months<br>
+     Total Collected: <strong style="color:var(--green)">${R(totalCollected)}</strong><br>
+     ${totalDue > 0 ? `Still Outstanding: <strong style="color:var(--red)">${R(totalDue)}</strong>` : 'All dues cleared ✓'}`;
+  document.getElementById('cclose-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('cclose-note').value = '';
+  openModal('chit-close-modal');
+}
+
+function confirmCloseChit() {
+  const chit = DB.chits.find(c => c.id === _ccloseId);
+  if (!chit) return;
+  const closeDate = document.getElementById('cclose-date').value;
+  if (!closeDate) { showToast('Enter a close date'); return; }
+  chit.status = 'closed';
+  chit.closeDate = closeDate;
+  chit.closeNote = document.getElementById('cclose-note').value.trim();
+  persist(); closeModal('chit-close-modal'); S.chitSub = 'active'; render();
+  showToast('Chit closed ✓');
+}
+
+function reopenChit(id) {
+  const chit = DB.chits.find(c => c.id === id);
+  if (!chit) return;
+  if (!confirm('Reopen this chit?')) return;
+  delete chit.status; delete chit.closeDate; delete chit.closeNote;
+  persist(); render(); showToast('Chit reopened');
+}
+
 // ═══════════════════════════════════════════════
 // MEMBER MODAL
 // ═══════════════════════════════════════════════
@@ -2627,7 +3300,8 @@ function openMemberModal(m = null) {
 function saveMember() {
   const name = document.getElementById('mm-name').value.trim();
   if (!name) { showToast('Enter a name'); return; }
-  const m = { id: _eidM || uid(), name, phone: document.getElementById('mm-phone').value.trim(), notes: document.getElementById('mm-notes').value.trim() };
+  const existing = _eidM ? DB.members.find(x => x.id === _eidM) : null;
+  const m = { id: _eidM || uid(), name, phone: document.getElementById('mm-phone').value.trim(), notes: document.getElementById('mm-notes').value.trim(), log: existing?.log || [] };
   if (_eidM) { const i = DB.members.findIndex(x => x.id === _eidM); if (i !== -1) DB.members[i] = m; }
   else DB.members.push(m);
   persist(); closeModal('member-modal'); render();
@@ -2699,8 +3373,15 @@ function importData(event) {
       const parsed = JSON.parse(e.target.result);
       if (!parsed.chits || !parsed.members) { showToast('Invalid backup file'); return; }
       const dateStr = parsed._exportedAt ? fmtDate(parsed._exportedAt) : 'unknown date';
-      if (!confirm(`Replace all current data with backup from ${dateStr}?\n\nThis cannot be undone.`)) return;
-      DB = { chits: parsed.chits, members: parsed.members };
+      const loanCount = (parsed.loans||[]).length;
+      const borrowCount = (parsed.borrowings||[]).length;
+      if (!confirm(`Replace all current data with backup from ${dateStr}?\n\n${parsed.chits.length} chits · ${parsed.members.length} members · ${loanCount} loans · ${borrowCount} borrowings\n\nThis cannot be undone.`)) return;
+      DB = {
+        chits: parsed.chits || [],
+        members: parsed.members || [],
+        loans: parsed.loans || [],
+        borrowings: parsed.borrowings || []
+      };
       persist(); closeModal('backup-modal'); render();
       showToast('Data restored ✓');
     } catch { showToast('Could not read file'); }
@@ -2761,25 +3442,38 @@ function backupToWhatsApp() {
   const now = new Date();
   const totalSlots = DB.chits.reduce((n, c) => n + (c.slots || []).length, 0);
   const totalDueAmt = DB.members.reduce((sum, m) => sum + memberTotalDue(m.id), 0);
+  const activeLoans = (DB.loans||[]).filter(l => l.status !== 'closed');
+  const totalIntDue = activeLoans.reduce((s, l) => s + loanInterestDue(l), 0);
+  const activeBorrows = (DB.borrowings||[]).filter(b => b.status !== 'closed');
+  const totalBorrowOwed = activeBorrows.reduce((s, b) => s + borrowInterestDue(b), 0);
 
-  // Build a readable summary + compact data payload
   const lines = [];
-  lines.push('🔐 *Chit Manager Backup*');
+  lines.push('🔐 *Ratna Chits Backup*');
   lines.push(`📅 ${fmtDate(now.toISOString())} at ${now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`);
   lines.push('');
-  lines.push(`📊 *Summary*`);
-  lines.push(`• Chits: ${DB.chits.length}`);
+  lines.push('📊 *Summary*');
+  lines.push(`• Chits: ${DB.chits.length} · Slots: ${totalSlots}`);
   lines.push(`• Members: ${DB.members.length}`);
-  lines.push(`• Total Slots: ${totalSlots}`);
-  lines.push(`• Outstanding: ₹${totalDueAmt.toLocaleString('en-IN')}`);
+  lines.push(`• Chit outstanding: ₹${totalDueAmt.toLocaleString('en-IN')}`);
+  lines.push(`• Loans: ${activeLoans.length} active · Int due: ₹${totalIntDue.toLocaleString('en-IN')}`);
+  if (activeBorrows.length > 0) lines.push(`• Borrowings: ${activeBorrows.length} active · You owe: ₹${totalBorrowOwed.toLocaleString('en-IN')}`);
   lines.push('');
   lines.push('📋 *Chits*');
   DB.chits.forEach(c => {
     const due = (c.slots || []).reduce((s, sl) => s + slotDueAmount(c, sl.id), 0);
     lines.push(`• ${c.name} — ${(c.slots||[]).length} slots${due > 0 ? ` · ₹${due.toLocaleString('en-IN')} due` : ' · Clear'}`);
   });
+  if (activeLoans.length > 0) {
+    lines.push('');
+    lines.push('💰 *Active Loans*');
+    activeLoans.forEach(l => {
+      const m = getMember(l.memberId);
+      const due = loanInterestDue(l);
+      lines.push(`• ${m.name} — ₹${Number(l.principal).toLocaleString('en-IN')} @ ${l.rate}%${due > 0 ? ` · Int due: ₹${due.toLocaleString('en-IN')}` : ' · Clear'}`);
+    });
+  }
   lines.push('');
-  lines.push('👥 *Members with dues*');
+  lines.push('👥 *Members with chit dues*');
   const withDues = DB.members.filter(m => memberTotalDue(m.id) > 0);
   if (withDues.length === 0) {
     lines.push('• All clear 🎉');
@@ -2800,21 +3494,571 @@ function backupToWhatsApp() {
   dismissBanner();
   showToast('Opening WhatsApp backup…');
 }
+
+// ═══════════════════════════════════════════════
+// BORROW MODAL — Create/Edit
+// ═══════════════════════════════════════════════
+let _borrowEid = null;
+let _borrowPayMode = '';
+
+function openBorrowModal(borrow = null) {
+  _borrowEid = borrow?.id || null;
+  document.getElementById('bm-title').innerHTML = borrow ? 'Edit <span>Borrowing</span>' : 'New <span>Borrowing</span>';
+  document.getElementById('bm-lender').value = borrow?.lender || '';
+  document.getElementById('bm-principal').value = borrow?.principal || '';
+  document.getElementById('bm-rate').value = borrow?.rate || '';
+  document.getElementById('bm-start').value = borrow?.startDate || new Date().toISOString().split('T')[0];
+  document.getElementById('bm-notes').value = borrow?.notes || '';
+  openModal('borrow-modal');
+}
+
+function saveBorrowing() {
+  const lender = document.getElementById('bm-lender').value.trim();
+  const principal = Number(document.getElementById('bm-principal').value);
+  const rate = Number(document.getElementById('bm-rate').value);
+  const startDate = document.getElementById('bm-start').value;
+  if (!lender) { showToast('Enter lender name'); return; }
+  if (!principal || principal <= 0) { showToast('Enter a valid amount'); return; }
+  if (!rate || rate <= 0) { showToast('Enter interest rate'); return; }
+  if (!startDate) { showToast('Enter start date'); return; }
+  const borrow = {
+    id: _borrowEid || uid(), lender, principal, rate, startDate,
+    notes: document.getElementById('bm-notes').value.trim(),
+    status: 'active',
+    payments: _borrowEid ? (DB.borrowings.find(b=>b.id===_borrowEid)?.payments||[]) : []
+  };
+  if (_borrowEid) {
+    const idx = DB.borrowings.findIndex(b => b.id === _borrowEid);
+    if (idx !== -1) DB.borrowings[idx] = borrow;
+  } else {
+    DB.borrowings.push(borrow);
+  }
+  persist(); closeModal('borrow-modal'); render();
+  showToast(_borrowEid ? 'Borrowing updated' : 'Borrowing recorded');
+}
+
+function deleteBorrowing(id) {
+  if (!confirm('Delete this borrowing record?')) return;
+  DB.borrowings = DB.borrowings.filter(b => b.id !== id);
+  persist(); render(); showToast('Borrowing deleted');
+}
+
+// ═══════════════════════════════════════════════
+// BORROW PAYMENT MODAL
+// ═══════════════════════════════════════════════
+let _bpayId = null;
+
+function setBorrowPayMode(mode, btn) {
+  _borrowPayMode = mode;
+  document.querySelectorAll('#bpay-mode-grid .pay-mode-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function openBorrowPaymentModal(borrowId) {
+  _bpayId = borrowId;
+  _borrowPayMode = '';
+  document.querySelectorAll('#bpay-mode-grid .pay-mode-btn').forEach(b => b.classList.remove('on'));
+  const borrow = DB.borrowings.find(b => b.id === borrowId);
+  if (!borrow) return;
+  const accrued = borrowAccruedInterest(borrow);
+  const paid = borrowTotalPaid(borrow);
+  const intDue = Math.max(0, accrued - paid);
+  document.getElementById('bpay-summary').innerHTML =
+    `Lender: <strong>${borrow.lender}</strong> · ${R(borrow.principal)} @ ${borrow.rate}%/mo<br>
+     Accrued: <strong style="color:var(--amber)">${R(accrued)}</strong> &nbsp;|&nbsp;
+     Paid: <strong style="color:var(--green)">${R(paid)}</strong><br>
+     You Owe: <strong style="color:${intDue>0?'var(--red)':'var(--green)'}">${intDue>0?R(intDue):'₹0 — Clear'}</strong>`;
+  document.getElementById('bpay-amt').value = intDue > 0 ? intDue : '';
+  document.getElementById('bpay-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('bpay-note').value = '';
+  openModal('bpay-modal');
+}
+
+function saveBorrowPayment() {
+  const borrow = DB.borrowings.find(b => b.id === _bpayId);
+  if (!borrow) return;
+  const amt = Number(document.getElementById('bpay-amt').value);
+  if (!amt || amt <= 0) { showToast('Enter a valid amount'); return; }
+  const date = document.getElementById('bpay-date').value;
+  if (!date) { showToast('Enter a date'); return; }
+  if (!borrow.payments) borrow.payments = [];
+  borrow.payments.push({ id: uid(), amount: amt, date, mode: _borrowPayMode || 'others', note: document.getElementById('bpay-note').value.trim() });
+  persist(); closeModal('bpay-modal'); render();
+  showToast('Repayment recorded');
+}
+
+// ═══════════════════════════════════════════════
+// BORROW CLOSE MODAL
+// ═══════════════════════════════════════════════
+let _bcloseId = null;
+
+function openCloseBorrowModal(borrowId) {
+  _bcloseId = borrowId;
+  const borrow = DB.borrowings.find(b => b.id === borrowId);
+  if (!borrow) return;
+  const accrued = borrowAccruedInterest(borrow);
+  const paid = borrowTotalPaid(borrow);
+  const intDue = Math.max(0, accrued - paid);
+  document.getElementById('bclose-summary').innerHTML =
+    `Lender: <strong>${borrow.lender}</strong><br>
+     Principal: <strong>${R(borrow.principal)}</strong><br>
+     Total Interest Accrued: <strong style="color:var(--amber)">${R(accrued)}</strong><br>
+     Total Paid: <strong style="color:var(--green)">${R(paid)}</strong><br>
+     Balance: <strong style="color:${intDue>0?'var(--red)':'var(--green)'}">${intDue>0?R(intDue):'All Clear'}</strong>`;
+  document.getElementById('bclose-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('bclose-note').value = '';
+  openModal('bclose-modal');
+}
+
+function confirmCloseBorrowing() {
+  const borrow = DB.borrowings.find(b => b.id === _bcloseId);
+  if (!borrow) return;
+  const closeDate = document.getElementById('bclose-date').value;
+  if (!closeDate) { showToast('Enter a close date'); return; }
+  borrow.status = 'closed';
+  borrow.closeDate = closeDate;
+  borrow.closeNote = document.getElementById('bclose-note').value.trim();
+  persist(); closeModal('bclose-modal'); render();
+  showToast('Borrowing marked as settled ✓');
+}
+
+// ═══════════════════════════════════════════════
+// LOAN / INTEREST HELPERS
+// ═══════════════════════════════════════════════
+function loanAccruedInterest(loan) {
+  if (!loan.startDate) return 0;
+  const start = new Date(loan.startDate);
+  const end = loan.status === 'closed' && loan.closeDate ? new Date(loan.closeDate) : new Date();
+  // Number of complete months elapsed
+  const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  return Math.max(0, months) * Number(loan.principal) * Number(loan.rate) / 100;
+}
+
+function loanTotalPaid(loan) {
+  return (loan.payments || []).reduce((s, p) => s + Number(p.amount), 0);
+}
+
+function loanInterestDue(loan) {
+  if (loan.status === 'closed') return 0;
+  return Math.max(0, loanAccruedInterest(loan) - loanTotalPaid(loan));
+}
+
+// ═══════════════════════════════════════════════
+// INTEREST TAB — MAIN RENDER
+// ═══════════════════════════════════════════════
+function setInterestSub(sub) {
+  S.interestSub = sub;
+  document.querySelectorAll('.int-sub-btn').forEach(b => b.classList.toggle('on', b.dataset.sub === sub));
+  renderInterestContent();
+}
+
+function renderInterestList() {
+  document.getElementById('fab').classList.remove('off');
+  showSearchBar(true);
+  const el = document.getElementById('scroll');
+  el.innerHTML = `
+    <div class="seg-toggle" style="margin-bottom:14px">
+      <button class="int-sub-btn seg-btn ${S.interestSub==='active'?'on':''}" data-sub="active" onclick="setInterestSub('active')">Active</button>
+      <button class="int-sub-btn seg-btn ${S.interestSub==='borrowed'?'on':''}" data-sub="borrowed" onclick="setInterestSub('borrowed')">Borrowed</button>
+      <button class="int-sub-btn seg-btn ${S.interestSub==='closed'?'on':''}" data-sub="closed" onclick="setInterestSub('closed')">Closed</button>
+    </div>
+    <div id="interest-content"></div>
+  `;
+  renderInterestContent();
+}
+
+function renderInterestContent() {
+  const el = document.getElementById('interest-content');
+  if (!el) return;
+  const q = S.query;
+  const sub = S.interestSub;
+
+  if (sub === 'active') {
+    let loans = (DB.loans||[]).filter(l => l.status !== 'closed');
+    if (q) loans = loans.filter(l => getMember(l.memberId).name.toLowerCase().includes(q) || (l.notes||'').toLowerCase().includes(q));
+    const totalDeployed = (DB.loans||[]).filter(l=>l.status!=='closed').reduce((s,l)=>s+Number(l.principal),0);
+    const totalIntDue = (DB.loans||[]).filter(l=>l.status!=='closed').reduce((s,l)=>s+loanInterestDue(l),0);
+    const totalIntEarned = (DB.loans||[]).filter(l=>l.status!=='closed').reduce((s,l)=>s+loanTotalPaid(l),0);
+    if (!loans.length && !q) {
+      el.innerHTML = `<div class="empty"><div class="empty-icon">💰</div><div class="empty-title">No Active Loans</div><div class="empty-desc">Tap + to record a loan given to someone.</div></div>`;
+      return;
+    }
+    el.innerHTML = `
+      <div class="analytics-grid" style="margin-bottom:14px">
+        <div class="analytics-card"><div class="analytics-label">Lent Out</div><div class="analytics-value" style="font-size:17px">${R(totalDeployed)}</div><div class="analytics-sub">${(DB.loans||[]).filter(l=>l.status!=='closed').length} loans</div></div>
+        <div class="analytics-card"><div class="analytics-label">Int. Collected</div><div class="analytics-value" style="font-size:17px;color:var(--green)">${R(totalIntEarned)}</div><div class="analytics-sub">received</div></div>
+        <div class="analytics-card analytics-wide"><div class="analytics-label">Interest Outstanding</div><div class="analytics-value" style="font-size:17px;color:${totalIntDue>0?'var(--red)':'var(--green)'}">${R(totalIntDue)}</div><div class="analytics-sub">accrued, not yet paid</div></div>
+      </div>
+      ${loans.length ? loans.map(l => loanCompactCard(l)).join('') : '<div class="no-results"><span>🔍</span>No matches</div>'}
+    `;
+  } else if (sub === 'closed') {
+    let loans = (DB.loans||[]).filter(l => l.status === 'closed');
+    let borrows = (DB.borrowings||[]).filter(b => b.status === 'closed');
+    if (q) {
+      loans = loans.filter(l => getMember(l.memberId).name.toLowerCase().includes(q) || (l.notes||'').toLowerCase().includes(q));
+      borrows = borrows.filter(b => (b.lender||'').toLowerCase().includes(q) || (b.notes||'').toLowerCase().includes(q));
+    }
+    if (!loans.length && !borrows.length) {
+      el.innerHTML = `<div class="empty"><div class="empty-icon">✅</div><div class="empty-title">No Closed Records</div><div class="empty-desc">Settled loans and borrowings appear here.</div></div>`;
+      return;
+    }
+    el.innerHTML = `
+      ${loans.length ? `<div class="ins-section-badge loans" style="margin-bottom:10px">Loans — Settled</div>${loans.map(l=>loanCompactCard(l)).join('')}` : ''}
+      ${borrows.length ? `<div class="ins-section-badge" style="background:var(--blue-pale);color:var(--blue);border:1px solid rgba(37,99,235,0.2);margin-bottom:10px;margin-top:${loans.length?'16px':'0'}">Borrowings — Closed</div>${borrows.map(b=>borrowCompactCard(b)).join('')}` : ''}
+    `;
+  } else {
+    // Borrowed tab
+    let borrows = (DB.borrowings||[]).filter(b => b.status !== 'closed');
+    if (q) borrows = borrows.filter(b => (b.lender||'').toLowerCase().includes(q) || (b.notes||'').toLowerCase().includes(q));
+    const totalBorrowed = (DB.borrowings||[]).filter(b=>b.status!=='closed').reduce((s,b)=>s+Number(b.principal),0);
+    const totalIntPaid = (DB.borrowings||[]).filter(b=>b.status!=='closed').reduce((s,b)=>s+borrowTotalPaid(b),0);
+    const totalIntOwed = (DB.borrowings||[]).filter(b=>b.status!=='closed').reduce((s,b)=>s+borrowInterestDue(b),0);
+    if (!borrows.length && !q) {
+      el.innerHTML = `<div class="empty"><div class="empty-icon">🤝</div><div class="empty-title">No Borrowings</div><div class="empty-desc">Tap + to record money you have borrowed from friends or family.</div></div>`;
+      return;
+    }
+    el.innerHTML = `
+      <div class="analytics-grid" style="margin-bottom:14px">
+        <div class="analytics-card"><div class="analytics-label">Total Borrowed</div><div class="analytics-value" style="font-size:17px;color:var(--blue)">${R(totalBorrowed)}</div><div class="analytics-sub">${(DB.borrowings||[]).filter(b=>b.status!=='closed').length} active</div></div>
+        <div class="analytics-card"><div class="analytics-label">Int. Paid</div><div class="analytics-value" style="font-size:17px;color:var(--green)">${R(totalIntPaid)}</div><div class="analytics-sub">repaid</div></div>
+        <div class="analytics-card analytics-wide"><div class="analytics-label">Interest You Owe</div><div class="analytics-value" style="font-size:17px;color:${totalIntOwed>0?'var(--red)':'var(--green)'}">${R(totalIntOwed)}</div><div class="analytics-sub">accrued, not yet paid</div></div>
+      </div>
+      ${borrows.length ? borrows.map(b => borrowCompactCard(b)).join('') : '<div class="no-results"><span>🔍</span>No matches</div>'}
+    `;
+  }
+}
+
+function loanCompactCard(loan) {
+  const m = getMember(loan.memberId);
+  const accrued = loanAccruedInterest(loan);
+  const paid = loanTotalPaid(loan);
+  const intDue = Math.max(0, accrued - paid);
+  const isClosed = loan.status === 'closed';
+  const months = loan.startDate ? Math.max(0,(new Date().getFullYear()-new Date(loan.startDate).getFullYear())*12+(new Date().getMonth()-new Date(loan.startDate).getMonth())) : 0;
+  return `
+  <div class="loan-card ${isClosed?'closed':''}" onclick="openLoanDetail('${loan.id}')">
+    <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+        <div class="ava" style="${isClosed?'background:var(--ink3)':''}">${initials(m.name)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px">
+            ${m.name}
+            <span class="pill ${isClosed?'pill-neutral':intDue>0?'pill-red':'pill-green'}" style="font-size:9px">${isClosed?'CLOSED':intDue>0?'DUE':'CLEAR'}</span>
+          </div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px;font-weight:500">${R(loan.principal)} · ${loan.rate}%/mo · ${isClosed?'Closed '+fmtDate(loan.closeDate):months+'mo running'}</div>
+          ${loan.notes?`<div style="font-size:10px;color:var(--ink4);margin-top:1px;font-weight:600">${loan.notes}</div>`:''}
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:10px">
+        <div style="font-size:15px;font-weight:800;color:${isClosed?'var(--ink3)':intDue>0?'var(--red)':'var(--green)'}">${isClosed?R(paid):R(intDue)}</div>
+        <div style="font-size:10px;color:var(--ink4);font-weight:600;margin-top:2px">${isClosed?'collected':'int due'}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function borrowCompactCard(borrow) {
+  const accrued = borrowAccruedInterest(borrow);
+  const paid = borrowTotalPaid(borrow);
+  const intDue = Math.max(0, accrued - paid);
+  const isClosed = borrow.status === 'closed';
+  const months = borrow.startDate ? Math.max(0,(new Date().getFullYear()-new Date(borrow.startDate).getFullYear())*12+(new Date().getMonth()-new Date(borrow.startDate).getMonth())) : 0;
+  return `
+  <div class="loan-card ${isClosed?'closed':''}" style="border-color:rgba(37,99,235,0.15)" onclick="openBorrowDetail('${borrow.id}')">
+    <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+        <div class="ava" style="background:var(--blue);color:white">${(borrow.lender||'?').slice(0,2).toUpperCase()}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px">
+            From: ${borrow.lender||'Unknown'}
+            <span class="pill ${isClosed?'pill-neutral':intDue>0?'pill-red':'pill-green'}" style="font-size:9px">${isClosed?'CLOSED':intDue>0?'OWED':'CLEAR'}</span>
+          </div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px;font-weight:500">${R(borrow.principal)} · ${borrow.rate}%/mo · ${isClosed?'Closed '+fmtDate(borrow.closeDate):months+'mo running'}</div>
+          ${borrow.notes?`<div style="font-size:10px;color:var(--ink4);margin-top:1px;font-weight:600">${borrow.notes}</div>`:''}
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:10px">
+        <div style="font-size:15px;font-weight:800;color:${isClosed?'var(--ink3)':intDue>0?'var(--red)':'var(--green)'}">${isClosed?R(paid):R(intDue)}</div>
+        <div style="font-size:10px;color:var(--ink4);font-weight:600;margin-top:2px">${isClosed?'paid':'int owed'}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// LOAN DETAIL SHEET
+// ═══════════════════════════════════════════════
+function openLoanDetail(loanId) {
+  const loan = (DB.loans||[]).find(l => l.id === loanId);
+  if (!loan) return;
+  const m = getMember(loan.memberId);
+  const accrued = loanAccruedInterest(loan);
+  const paid = loanTotalPaid(loan);
+  const intDue = Math.max(0, accrued - paid);
+  const isClosed = loan.status === 'closed';
+  const months = loan.startDate ? Math.max(0,(new Date().getFullYear()-new Date(loan.startDate).getFullYear())*12+(new Date().getMonth()-new Date(loan.startDate).getMonth())) : 0;
+
+  document.getElementById('ldetail-title').innerHTML = `${m.name} <span>Loan</span>`;
+  document.getElementById('ldetail-hero').innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">${isClosed?'CLOSED LOAN':'ACTIVE LOAN · '+months+' MONTHS'}</div>
+    <div style="font-size:22px;font-weight:700;font-family:'Playfair Display',serif;color:white;margin-bottom:16px">${m.name}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Principal</div><div style="font-size:16px;font-weight:800;color:white;margin-top:3px">${R(loan.principal)}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Accrued</div><div style="font-size:16px;font-weight:800;color:#FCD34D;margin-top:3px">${R(accrued)}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">${isClosed?'Collected':'Outstanding'}</div><div style="font-size:16px;font-weight:800;color:${isClosed?'#6EE7B7':intDue>0?'#FCA5A5':'#6EE7B7'};margin-top:3px">${isClosed?R(paid):R(intDue)}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Rate</div><div style="font-size:16px;font-weight:800;color:white;margin-top:3px">${loan.rate}%/mo</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Started</div><div style="font-size:14px;font-weight:700;color:white;margin-top:3px">${fmtDate(loan.startDate)}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Total Paid</div><div style="font-size:16px;font-weight:800;color:#6EE7B7;margin-top:3px">${R(paid)}</div></div>
+    </div>
+    ${loan.notes?`<div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);font-size:12px;color:rgba(255,255,255,0.5);font-weight:500">${loan.notes}</div>`:''}
+    ${isClosed&&loan.writeOff>0?`<div style="margin-top:8px;font-size:11px;color:#FCD34D;font-weight:600">Write-off: ${R(loan.writeOff)} · ${loan.closeNote||''}</div>`:''}
+  `;
+
+  document.getElementById('ldetail-actions').innerHTML = isClosed ? `
+    <button class="action-btn danger" onclick="deleteLoan('${loan.id}');closeModal('ldetail-modal')">Delete Record</button>
+  ` : `
+    <button class="action-btn" style="color:var(--gold);border-color:var(--gold-border);background:var(--gold-pale)" onclick="closeModal('ldetail-modal');openLoanPaymentModal('${loan.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Record Payment
+    </button>
+    <button class="action-btn" style="color:var(--green);border-color:rgba(42,122,90,0.25);background:var(--green-pale)" onclick="closeModal('ldetail-modal');openCloseLoanModal('${loan.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg> Settle Loan
+    </button>
+    <button class="action-btn" onclick="closeModal('ldetail-modal');openLoanModal(DB.loans.find(l=>l.id==='${loan.id}'))">Edit</button>
+    <button class="action-btn danger" onclick="deleteLoan('${loan.id}');closeModal('ldetail-modal')">Delete</button>
+  `;
+
+  const payments = loan.payments || [];
+  const modeNames = {gpay:'GPay',phonepe:'PhonePe',cash:'Cash',netbanking:'NetBanking',paytm:'Paytm',others:'Others'};
+  document.getElementById('ldetail-payments').innerHTML = payments.length === 0
+    ? `<div style="text-align:center;padding:28px 20px;font-size:13px;color:var(--ink4);font-weight:500">No payments recorded yet.</div>`
+    : [...payments].reverse().map(p => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink)">${fmtDate(p.date)}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px;font-weight:500">${modeNames[p.mode]||p.mode||'—'}${p.note?' · '+p.note:''}</div>
+        </div>
+        <div style="font-size:15px;font-weight:800;color:var(--green)">${R(p.amount)}</div>
+      </div>`).join('');
+
+  openModal('ldetail-modal');
+}
+
+// ═══════════════════════════════════════════════
+// BORROW DETAIL SHEET
+// ═══════════════════════════════════════════════
+function openBorrowDetail(borrowId) {
+  const borrow = (DB.borrowings||[]).find(b => b.id === borrowId);
+  if (!borrow) return;
+  const accrued = borrowAccruedInterest(borrow);
+  const paid = borrowTotalPaid(borrow);
+  const intDue = Math.max(0, accrued - paid);
+  const isClosed = borrow.status === 'closed';
+  const months = borrow.startDate ? Math.max(0,(new Date().getFullYear()-new Date(borrow.startDate).getFullYear())*12+(new Date().getMonth()-new Date(borrow.startDate).getMonth())) : 0;
+
+  document.getElementById('bdetail-title').innerHTML = `${borrow.lender||'Borrowing'} <span>Detail</span>`;
+  document.getElementById('bdetail-hero').innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">${isClosed?'CLOSED':'ACTIVE · '+months+' MONTHS'}</div>
+    <div style="font-size:22px;font-weight:700;font-family:'Playfair Display',serif;color:white;margin-bottom:16px">From: ${borrow.lender||'Unknown'}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Borrowed</div><div style="font-size:16px;font-weight:800;color:white;margin-top:3px">${R(borrow.principal)}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Int. Accrued</div><div style="font-size:16px;font-weight:800;color:#FCD34D;margin-top:3px">${R(accrued)}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">${isClosed?'Total Paid':'Int. Owed'}</div><div style="font-size:16px;font-weight:800;color:${isClosed?'#6EE7B7':intDue>0?'#FCA5A5':'#6EE7B7'};margin-top:3px">${isClosed?R(paid):R(intDue)}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Rate</div><div style="font-size:16px;font-weight:800;color:white;margin-top:3px">${borrow.rate}%/mo</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">From</div><div style="font-size:14px;font-weight:700;color:white;margin-top:3px">${fmtDate(borrow.startDate)}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Paid So Far</div><div style="font-size:16px;font-weight:800;color:#6EE7B7;margin-top:3px">${R(paid)}</div></div>
+    </div>
+    ${borrow.notes?`<div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);font-size:12px;color:rgba(255,255,255,0.5);font-weight:500">${borrow.notes}</div>`:''}
+  `;
+
+  document.getElementById('bdetail-actions').innerHTML = isClosed ? `
+    <button class="action-btn danger" onclick="deleteBorrowing('${borrow.id}');closeModal('bdetail-modal')">Delete Record</button>
+  ` : `
+    <button class="action-btn" style="color:var(--blue);border-color:rgba(37,99,235,0.25);background:var(--blue-pale)" onclick="closeModal('bdetail-modal');openBorrowPaymentModal('${borrow.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Record Repayment
+    </button>
+    <button class="action-btn" style="color:var(--green);border-color:rgba(42,122,90,0.25);background:var(--green-pale)" onclick="closeModal('bdetail-modal');openCloseBorrowModal('${borrow.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg> Mark Settled
+    </button>
+    <button class="action-btn" onclick="closeModal('bdetail-modal');openBorrowModal(DB.borrowings.find(b=>b.id==='${borrow.id}'))">Edit</button>
+    <button class="action-btn danger" onclick="deleteBorrowing('${borrow.id}');closeModal('bdetail-modal')">Delete</button>
+  `;
+
+  const payments = borrow.payments || [];
+  const modeNames = {gpay:'GPay',phonepe:'PhonePe',cash:'Cash',netbanking:'NetBanking',paytm:'Paytm',others:'Others'};
+  document.getElementById('bdetail-payments').innerHTML = payments.length === 0
+    ? `<div style="text-align:center;padding:28px 20px;font-size:13px;color:var(--ink4);font-weight:500">No repayments recorded yet.</div>`
+    : [...payments].reverse().map(p => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink)">${fmtDate(p.date)}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px;font-weight:500">${modeNames[p.mode]||p.mode||'—'}${p.note?' · '+p.note:''}</div>
+        </div>
+        <div style="font-size:15px;font-weight:800;color:var(--blue)">${R(p.amount)}</div>
+      </div>`).join('');
+
+  openModal('bdetail-modal');
+}
+
+// ═══════════════════════════════════════════════
+// BORROW HELPERS
+// ═══════════════════════════════════════════════
+function borrowAccruedInterest(borrow) {
+  if (!borrow.startDate) return 0;
+  const start = new Date(borrow.startDate);
+  const end = borrow.status === 'closed' && borrow.closeDate ? new Date(borrow.closeDate) : new Date();
+  const months = Math.max(0, (end.getFullYear()-start.getFullYear())*12+(end.getMonth()-start.getMonth()));
+  return months * Number(borrow.principal) * Number(borrow.rate) / 100;
+}
+function borrowTotalPaid(borrow) { return (borrow.payments||[]).reduce((s,p)=>s+Number(p.amount),0); }
+function borrowInterestDue(borrow) {
+  if (borrow.status === 'closed') return 0;
+  return Math.max(0, borrowAccruedInterest(borrow) - borrowTotalPaid(borrow));
+}
+
+// ═══════════════════════════════════════════════
+// LOAN MODAL — Create/Edit
+// ═══════════════════════════════════════════════
+let _loanEid = null;
+let _loanPayMode = '';
+
+function openLoanModal(loan = null) {
+  _loanEid = loan?.id || null;
+  document.getElementById('lm-title').innerHTML = loan ? 'Edit <span>Loan</span>' : 'New <span>Loan</span>';
+  // Populate member dropdown
+  const sel = document.getElementById('lm-member');
+  sel.innerHTML = '<option value="">Select member…</option>' + DB.members.map(m => `<option value="${m.id}" ${loan?.memberId===m.id?'selected':''}>${m.name}</option>`).join('');
+  document.getElementById('lm-principal').value = loan?.principal || '';
+  document.getElementById('lm-rate').value = loan?.rate || '';
+  document.getElementById('lm-start').value = loan?.startDate || new Date().toISOString().split('T')[0];
+  document.getElementById('lm-notes').value = loan?.notes || '';
+  openModal('loan-modal');
+}
+
+function saveLoan() {
+  const memberId = document.getElementById('lm-member').value;
+  const principal = Number(document.getElementById('lm-principal').value);
+  const rate = Number(document.getElementById('lm-rate').value);
+  const startDate = document.getElementById('lm-start').value;
+  if (!memberId) { showToast('Select a borrower'); return; }
+  if (!principal || principal <= 0) { showToast('Enter a valid principal amount'); return; }
+  if (!rate || rate <= 0) { showToast('Enter an interest rate'); return; }
+  if (!startDate) { showToast('Enter a start date'); return; }
+  const loan = {
+    id: _loanEid || uid(), memberId, principal, rate, startDate,
+    notes: document.getElementById('lm-notes').value.trim(),
+    status: 'active', payments: _loanEid ? (DB.loans.find(l=>l.id===_loanEid)?.payments||[]) : []
+  };
+  if (_loanEid) {
+    const idx = DB.loans.findIndex(l => l.id === _loanEid);
+    if (idx !== -1) DB.loans[idx] = loan;
+  } else {
+    DB.loans.push(loan);
+  }
+  persist(); closeModal('loan-modal'); render();
+  showToast(_loanEid ? 'Loan updated' : 'Loan recorded');
+}
+
+function deleteLoan(id) {
+  if (!confirm('Delete this loan record?')) return;
+  DB.loans = DB.loans.filter(l => l.id !== id);
+  persist(); render(); showToast('Loan deleted');
+}
+
+// ═══════════════════════════════════════════════
+// LOAN PAYMENT MODAL
+// ═══════════════════════════════════════════════
+let _lpayLoanId = null;
+
+function setLoanPayMode(mode, btn) {
+  _loanPayMode = mode;
+  document.querySelectorAll('#lpay-mode-grid .pay-mode-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function openLoanPaymentModal(loanId) {
+  _lpayLoanId = loanId;
+  _loanPayMode = '';
+  document.querySelectorAll('#lpay-mode-grid .pay-mode-btn').forEach(b => b.classList.remove('on'));
+  const loan = DB.loans.find(l => l.id === loanId);
+  if (!loan) return;
+  const m = getMember(loan.memberId);
+  const accrued = loanAccruedInterest(loan);
+  const paid = loanTotalPaid(loan);
+  const intDue = Math.max(0, accrued - paid);
+  document.getElementById('lpay-summary').innerHTML =
+    `<strong>${m.name}</strong> · ${R(loan.principal)} @ ${loan.rate}%/mo<br>
+     Accrued Interest: <strong style="color:var(--amber)">${R(accrued)}</strong> &nbsp;|&nbsp;
+     Paid: <strong style="color:var(--green)">${R(paid)}</strong><br>
+     Interest Due: <strong style="color:${intDue>0?'var(--red)':'var(--green)'}">${intDue>0?R(intDue):'₹0 — Clear'}</strong>`;
+  document.getElementById('lpay-amt').value = intDue > 0 ? intDue : '';
+  document.getElementById('lpay-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('lpay-note').value = '';
+  openModal('lpay-modal');
+}
+
+function saveLoanPayment() {
+  const loan = DB.loans.find(l => l.id === _lpayLoanId);
+  if (!loan) return;
+  const amt = Number(document.getElementById('lpay-amt').value);
+  if (!amt || amt <= 0) { showToast('Enter a valid amount'); return; }
+  const date = document.getElementById('lpay-date').value;
+  if (!date) { showToast('Enter a date'); return; }
+  if (!loan.payments) loan.payments = [];
+  loan.payments.push({
+    id: uid(), amount: amt, date,
+    mode: _loanPayMode || 'others',
+    note: document.getElementById('lpay-note').value.trim()
+  });
+  persist(); closeModal('lpay-modal'); render();
+  showToast('Payment recorded');
+}
+
+// ═══════════════════════════════════════════════
+// LOAN CLOSE MODAL
+// ═══════════════════════════════════════════════
+let _lcloseId = null;
+
+function openCloseLoanModal(loanId) {
+  _lcloseId = loanId;
+  const loan = DB.loans.find(l => l.id === loanId);
+  if (!loan) return;
+  const m = getMember(loan.memberId);
+  const accrued = loanAccruedInterest(loan);
+  const paid = loanTotalPaid(loan);
+  const intDue = Math.max(0, accrued - paid);
+  document.getElementById('lclose-summary').innerHTML =
+    `Borrower: <strong>${m.name}</strong><br>
+     Principal: <strong>${R(loan.principal)}</strong><br>
+     Total Interest Accrued: <strong style="color:var(--amber)">${R(accrued)}</strong><br>
+     Total Paid: <strong style="color:var(--green)">${R(paid)}</strong><br>
+     Balance Interest: <strong style="color:${intDue>0?'var(--red)':'var(--green)'}">${intDue>0?R(intDue):'₹0 — Fully Paid'}</strong>`;
+  document.getElementById('lclose-writeoff').value = intDue > 0 ? intDue : '';
+  document.getElementById('lclose-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('lclose-note').value = '';
+  openModal('lclose-modal');
+}
+
+function confirmCloseLoan() {
+  const loan = DB.loans.find(l => l.id === _lcloseId);
+  if (!loan) return;
+  const writeOff = Number(document.getElementById('lclose-writeoff').value) || 0;
+  const closeDate = document.getElementById('lclose-date').value;
+  if (!closeDate) { showToast('Enter a close date'); return; }
+  loan.status = 'closed';
+  loan.closeDate = closeDate;
+  loan.writeOff = writeOff;
+  loan.closeNote = document.getElementById('lclose-note').value.trim();
+  persist(); closeModal('lclose-modal'); render();
+  showToast('Loan settled ✓');
+}
 </script>
 
 <script>
-  // ── PWA: Register Service Worker ──────────────────────────
-  // This enables offline support and "Add to Home Screen" on Android.
-  // The service worker file (sw.js) caches all app files locally.
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
-        .then(reg => {
-          console.log('[App] Service Worker registered. Scope:', reg.scope);
-        })
-        .catch(err => {
-          console.warn('[App] Service Worker registration failed:', err);
-        });
+        .then(reg => console.log('[PWA] Service Worker registered:', reg.scope))
+        .catch(err => console.warn('[PWA] Service Worker failed:', err));
     });
   }
 </script>

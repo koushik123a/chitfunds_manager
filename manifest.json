@@ -1,7 +1,7 @@
 {
-  "name": "Chit Manager",
+  "name": "Ratna Chits",
   "short_name": "Chits",
-  "description": "Ratna Chits - Payment Manager by Majeti",
+  "description": "Ratna Chits - Payment & Loan Manager",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",

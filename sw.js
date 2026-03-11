@@ -6,7 +6,7 @@
 //  to get the fresh version on their next app open.
 // ─────────────────────────────────────────────────────────────
 
-const CACHE_NAME = 'chit-manager-v10';
+const CACHE_NAME = 'ratna-chits-v4';
 
 const FILES_TO_CACHE = [
   './index.html',
