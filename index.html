@@ -1,0 +1,2822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#C8962A">
+<link rel="manifest" href="manifest.json">
+<title>Chit Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #F8F6F1;
+  --cream2: #F0EDE6;
+  --cream3: #E8E3D9;
+  --ink: #1C1A17;
+  --ink2: #4A4640;
+  --ink3: #8C8680;
+  --ink4: #B8B3AC;
+  --gold: #C8962A;
+  --gold-light: #F5C842;
+  --gold-pale: #FDF3DC;
+  --gold-border: rgba(200,150,42,0.25);
+  --green: #2A7A5A;
+  --green-pale: #E8F5EE;
+  --red: #B03A2E;
+  --red-pale: #FDECEA;
+  --amber: #C8762A;
+  --amber-pale: #FEF3E6;
+  --blue: #2563EB;
+  --blue-pale: #EFF6FF;
+  --wa: #25D366;
+  --wa-pale: #EDFDF4;
+  --border: rgba(28,26,23,0.08);
+  --border2: rgba(28,26,23,0.12);
+  --shadow-sm: 0 1px 4px rgba(28,26,23,0.06);
+  --shadow: 0 4px 20px rgba(28,26,23,0.08);
+  --shadow-lg: 0 8px 40px rgba(28,26,23,0.12);
+  --r: 16px;
+  --r-sm: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%; background: var(--cream); color: var(--ink);
+  font-family: 'Mulish', sans-serif; overflow: hidden;
+}
+
+#app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+  position: relative;
+}
+.topbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20px; right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 16px; height: 16px; }
+.brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 600; color: var(--ink);
+  letter-spacing: -0.3px;
+}
+.brand-name span { color: var(--gold); }
+.topbar-right { font-size: 12px; color: var(--ink3); font-weight: 500; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+
+.back-btn {
+  display: none; align-items: center; gap: 6px;
+  background: none; border: none; color: var(--gold);
+  font-size: 13px; font-weight: 700; font-family: inherit;
+  cursor: pointer; padding: 0; letter-spacing: 0.2px;
+}
+.back-btn.on { display: flex; }
+
+/* ── NAV ── */
+.nav {
+  display: flex; background: var(--cream);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px; flex-shrink: 0; gap: 4px;
+}
+.nav-item {
+  padding: 14px 16px; font-size: 12px; font-weight: 700;
+  color: var(--ink3); cursor: pointer; border-bottom: 2px solid transparent;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.nav-item.on { color: var(--ink); border-bottom-color: var(--gold); }
+
+/* ── SEARCH BAR ── */
+.search-bar-wrap {
+  padding: 12px 20px 4px;
+  flex-shrink: 0;
+  background: var(--cream);
+}
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: white; border: 1px solid var(--border2);
+  border-radius: 12px; padding: 10px 14px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s;
+}
+.search-bar:focus-within { border-color: var(--gold); }
+.search-bar svg { width: 16px; height: 16px; color: var(--ink4); flex-shrink: 0; }
+.search-inp {
+  flex: 1; border: none; outline: none; background: none;
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  font-family: inherit;
+}
+.search-inp::placeholder { color: var(--ink4); font-weight: 500; }
+.search-clear {
+  background: none; border: none; color: var(--ink4);
+  font-size: 18px; cursor: pointer; padding: 0; line-height: 1;
+  display: none;
+}
+.search-clear.on { display: block; }
+
+/* ── SCROLL ── */
+.scroll { flex: 1; overflow-y: auto; padding: 16px 20px 100px; -webkit-overflow-scrolling: touch; }
+
+/* ── FAB ── */
+.fab {
+  position: fixed; bottom: 28px; right: 22px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--ink); color: var(--gold-light);
+  border: none; font-size: 24px;
+  cursor: pointer; z-index: 200;
+  box-shadow: 0 4px 20px rgba(28,26,23,0.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.18s; font-weight: 300;
+}
+.fab:active { transform: scale(0.9); }
+.fab.off { display: none; }
+
+/* ── SECTION LABEL ── */
+.slabel {
+  font-size: 10px; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--ink4);
+  margin: 20px 0 10px;
+}
+.slabel:first-child { margin-top: 0; }
+
+/* ── CHIT CARD ── */
+.chit-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r); margin-bottom: 12px;
+  box-shadow: var(--shadow-sm); overflow: hidden;
+  cursor: pointer; transition: box-shadow 0.2s, transform 0.15s;
+}
+.chit-card:active { transform: scale(0.985); box-shadow: var(--shadow); }
+.chit-card-top {
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.chit-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px; font-weight: 600; color: var(--ink);
+  letter-spacing: -0.2px;
+}
+.chit-sub { font-size: 12px; color: var(--ink3); margin-top: 3px; font-weight: 500; }
+.pill {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px;
+  padding: 4px 10px; border-radius: 20px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.pill-neutral { background: var(--cream2); color: var(--ink2); }
+.pill-gold { background: var(--gold-pale); color: var(--gold); border: 1px solid var(--gold-border); }
+.pill-green { background: var(--green-pale); color: var(--green); }
+.pill-red { background: var(--red-pale); color: var(--red); }
+.pill-amber { background: var(--amber-pale); color: var(--amber); }
+
+.chit-card-body { padding: 14px 20px; }
+.kv-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.kv-label { font-size: 10px; color: var(--ink3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.kv-value { font-size: 15px; font-weight: 700; color: var(--ink); margin-top: 3px; }
+.kv-value.gold { color: var(--gold); }
+.kv-value.green { color: var(--green); }
+.kv-value.red { color: var(--red); }
+
+.chit-card-foot {
+  padding: 12px 20px;
+  background: var(--cream);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.foot-meta { font-size: 11px; color: var(--ink3); font-weight: 600; }
+.icon-btns { display: flex; gap: 6px; }
+.icon-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border2);
+  background: white; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 13px;
+  transition: all 0.15s;
+}
+.icon-btn:active { transform: scale(0.88); }
+
+/* Progress strip */
+.prog-strip { height: 3px; background: var(--cream3); }
+.prog-fill { height: 100%; background: var(--green); transition: width 0.5s; }
+.prog-fill.partial { background: var(--amber); }
+
+/* ── MONTH LIST ── */
+.month-item {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+.month-item:active { transform: scale(0.985); }
+.month-item:hover { box-shadow: var(--shadow); }
+.month-left { display: flex; align-items: center; gap: 14px; }
+.month-num-box {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800;
+  background: var(--cream2); color: var(--ink3);
+}
+.month-num-box.cur { background: var(--ink); color: var(--gold-light); }
+.month-num-box.past { background: var(--cream3); color: var(--ink2); }
+.month-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+.month-desc { font-size: 11px; color: var(--ink3); margin-top: 3px; font-weight: 500; }
+.month-right { display: flex; align-items: center; gap: 8px; }
+.chevron { color: var(--ink4); font-size: 16px; }
+
+/* ── DETAIL HERO ── */
+.detail-hero {
+  background: var(--ink); border-radius: var(--r);
+  padding: 22px 20px; margin-bottom: 20px;
+  position: relative; overflow: hidden;
+}
+.detail-hero::before {
+  content: '';
+  position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(200,150,42,0.08);
+}
+.hero-label { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
+.hero-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; color: white; letter-spacing: -0.3px; }
+.hero-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 18px; }
+.hero-stat-label { font-size: 10px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.hero-stat-value { font-size: 16px; font-weight: 800; color: white; margin-top: 4px; }
+.hero-stat-value.gold { color: var(--gold-light); }
+.hero-stat-value.red { color: #FF8A80; }
+.hero-stat-value.green { color: #69F0AE; }
+
+/* ── WINNER BOX ── */
+.winner-section {
+  background: var(--gold-pale); border: 1px solid var(--gold-border);
+  border-radius: var(--r); padding: 16px 18px; margin-bottom: 20px;
+}
+.winner-heading {
+  font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+}
+.winner-select {
+  width: 100%; background: white; border: 1px solid var(--gold-border);
+  border-radius: 9px; padding: 11px 14px; color: var(--ink);
+  font-size: 14px; font-weight: 600; font-family: inherit; outline: none;
+}
+.winner-display {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px; padding: 10px 12px; background: white;
+  border-radius: 9px; border: 1px solid var(--gold-border);
+}
+.winner-display-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+
+/* ── PAYMENT ROW ── */
+.pay-item {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 16px;
+  margin-bottom: 8px; box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s;
+}
+.pay-item.paid-item { border-color: rgba(42,122,90,0.2); }
+.pay-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.pay-person-info { display: flex; align-items: center; gap: 10px; }
+.ava {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: var(--ink); color: var(--gold-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+}
+.ava.sm { width: 30px; height: 30px; font-size: 12px; }
+.ava.md { width: 40px; height: 40px; font-size: 15px; }
+.pay-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.pay-slot-tag {
+  display: inline-block; font-size: 9px; font-weight: 800;
+  background: var(--cream2); color: var(--ink3);
+  padding: 2px 7px; border-radius: 4px; margin-left: 5px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+.pay-expected { font-size: 12px; color: var(--ink3); margin-top: 2px; font-weight: 500; }
+.pay-amt-big { font-size: 16px; font-weight: 800; color: var(--ink); }
+.status-row { display: flex; gap: 6px; }
+.s-btn {
+  flex: 1; padding: 9px 6px; border-radius: 9px;
+  border: 1px solid var(--border2); background: var(--cream);
+  font-size: 11px; font-weight: 800; color: var(--ink3);
+  cursor: pointer; font-family: inherit; transition: all 0.18s;
+  letter-spacing: 0.2px; text-align: center;
+}
+.s-btn.s-paid { background: var(--green-pale); color: var(--green); border-color: rgba(42,122,90,0.25); }
+.s-btn.s-partial { background: var(--amber-pale); color: var(--amber); border-color: rgba(200,118,42,0.25); }
+.s-btn.s-due { background: var(--red-pale); color: var(--red); border-color: rgba(176,58,46,0.25); }
+.partial-row { display: none; margin-top: 12px; }
+.partial-row.on { display: flex; align-items: center; gap: 8px; }
+.partial-label { font-size: 12px; color: var(--ink3); white-space: nowrap; font-weight: 600; }
+
+/* ── WHATSAPP REMINDER SECTION ── */
+.reminder-section {
+  background: var(--wa-pale); border: 1px solid rgba(37,211,102,0.25);
+  border-radius: var(--r); padding: 16px 18px; margin-bottom: 16px;
+}
+.reminder-heading {
+  font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--wa); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.wa-person-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid rgba(37,211,102,0.15);
+}
+.wa-person-row:last-child { border-bottom: none; padding-bottom: 0; }
+.wa-person-info { display: flex; align-items: center; gap: 10px; }
+.wa-person-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.wa-person-due { font-size: 11px; color: var(--red); font-weight: 700; margin-top: 2px; }
+.wa-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--wa); color: white;
+  border: none; border-radius: 8px;
+  padding: 7px 12px; font-size: 11px; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s; white-space: nowrap;
+  text-decoration: none;
+}
+.wa-btn:active { transform: scale(0.93); }
+.wa-btn svg { width: 13px; height: 13px; }
+
+/* ── PERSON CARD — 2-row layout ── */
+.person-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 0;
+  margin-bottom: 8px; box-shadow: var(--shadow-sm);
+  overflow: hidden; transition: box-shadow 0.2s, transform 0.15s;
+}
+.person-card:active { transform: scale(0.985); }
+.person-card-top {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px 10px; cursor: pointer;
+}
+.person-card-info { flex: 1; min-width: 0; }
+.pname { font-size: 14px; font-weight: 700; color: var(--ink); }
+.psub { font-size: 11px; color: var(--ink3); margin-top: 2px; font-weight: 500; }
+.p-chits { font-size: 11px; color: var(--gold); margin-top: 2px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.person-card-actions {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px 12px; border-top: 1px solid var(--border);
+  background: var(--cream);
+}
+.person-card-actions .action-btn { flex: 1; justify-content: center; }
+
+/* ── MEMBER HISTORY (detail view) ── */
+.member-hero {
+  background: var(--ink); border-radius: var(--r);
+  padding: 22px 20px; margin-bottom: 20px;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: 16px;
+}
+.member-hero::before {
+  content: '';
+  position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(200,150,42,0.08);
+}
+.member-hero-info { flex: 1; min-width: 0; }
+.member-hero-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: white; }
+.member-hero-phone { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; font-weight: 500; }
+.member-hero-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 16px; }
+.mhs-label { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.mhs-value { font-size: 15px; font-weight: 800; color: white; margin-top: 3px; }
+.mhs-value.red { color: #FF8A80; }
+.mhs-value.green { color: #69F0AE; }
+.mhs-value.gold { color: var(--gold-light); }
+
+.history-chit-block {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-sm); overflow: hidden;
+  margin-bottom: 12px; box-shadow: var(--shadow-sm);
+}
+.hcb-head {
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; background: var(--cream);
+  border-bottom: 1px solid var(--border);
+}
+.hcb-head.open { background: white; }
+.hcb-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.hcb-meta { font-size: 11px; color: var(--ink3); margin-top: 2px; font-weight: 500; }
+.hcb-right { display: flex; align-items: center; gap: 8px; }
+.hcb-paid { font-size: 15px; font-weight: 800; color: var(--green); }
+.hcb-body { display: none; }
+.hcb-body.open { display: block; }
+.hist-row {
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border); font-size: 12px;
+}
+.hist-row:last-child { border-bottom: none; }
+.hist-month { color: var(--ink2); font-weight: 600; }
+.hist-amt { font-weight: 700; }
+.hist-amt.paid { color: var(--green); }
+.hist-amt.partial { color: var(--amber); }
+.hist-amt.unpaid { color: var(--red); }
+.hist-status-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.hist-status-dot.paid { background: var(--green); }
+.hist-status-dot.partial { background: var(--amber); }
+.hist-status-dot.unpaid { background: var(--red); }
+.hist-status-dot.future { background: var(--ink4); }
+.hist-row-left { display: flex; align-items: center; gap: 10px; }
+
+/* ── DUE SUMMARY ── */
+.due-hero {
+  background: var(--ink); border-radius: var(--r);
+  padding: 24px 22px; margin-bottom: 24px; text-align: center;
+}
+.due-hero-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+.due-hero-amt { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; color: #FF8A80; letter-spacing: -1px; }
+.due-hero-sub { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 6px; font-weight: 500; }
+.due-hero-amt.clear { color: #69F0AE; }
+
+.due-person-row {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-sm); overflow: hidden;
+  margin-bottom: 10px; box-shadow: var(--shadow-sm);
+}
+.dpr-head {
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+}
+.dpr-left { display: flex; align-items: center; gap: 12px; }
+.dpr-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.dpr-count { font-size: 11px; color: var(--ink3); margin-top: 2px; font-weight: 500; }
+.dpr-amount { font-size: 16px; font-weight: 800; color: var(--red); }
+.dpr-body { display: none; border-top: 1px solid var(--border); }
+.dpr-body.open { display: block; }
+.dpr-line {
+  padding: 10px 16px 10px 58px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border); font-size: 12px;
+}
+.dpr-line:last-child { border-bottom: none; }
+.dpr-line-name { color: var(--ink3); font-weight: 600; }
+.dpr-line-amt { color: var(--red); font-weight: 700; }
+
+.due-chit-block {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-sm); overflow: hidden;
+  margin-bottom: 10px; box-shadow: var(--shadow-sm);
+}
+.dcb-head {
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.dcb-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.dcb-total { font-size: 16px; font-weight: 800; color: var(--red); }
+.dcb-line {
+  padding: 9px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border); font-size: 12px;
+  background: var(--cream);
+}
+.dcb-person { color: var(--ink2); font-weight: 600; }
+.dcb-amt { color: var(--red); font-weight: 700; }
+
+/* ── MODAL ── */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,26,23,0.5); z-index: 400;
+  align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.overlay.on { display: flex; }
+.sheet {
+  background: var(--cream); border-radius: 22px 22px 0 0;
+  padding: 18px 20px 48px; width: 100%; max-width: 560px;
+  max-height: 92vh; overflow-y: auto;
+  animation: up 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: 0 -4px 40px rgba(28,26,23,0.15);
+}
+@keyframes up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sheet-handle { width: 32px; height: 3px; background: var(--cream3); border-radius: 2px; margin: 0 auto 20px; }
+.sheet-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 600; color: var(--ink);
+  margin-bottom: 20px; letter-spacing: -0.3px;
+}
+.sheet-title span { color: var(--gold); }
+
+/* ── FORM ── */
+.fg { margin-bottom: 14px; }
+.fl { display: block; font-size: 10px; font-weight: 800; color: var(--ink3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
+.fi {
+  width: 100%; background: white; border: 1px solid var(--border2);
+  border-radius: 10px; padding: 11px 14px; color: var(--ink);
+  font-size: 14px; font-weight: 600; font-family: inherit; outline: none;
+  transition: border-color 0.2s; box-shadow: var(--shadow-sm);
+}
+.fi:focus { border-color: var(--gold); }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fhint { font-size: 11px; color: var(--ink4); margin-top: 5px; font-weight: 500; }
+.fsel {
+  flex: 1; background: white; border: 1px solid var(--border2);
+  border-radius: 10px; padding: 10px 13px; color: var(--ink);
+  font-size: 13px; font-weight: 600; font-family: inherit; outline: none;
+  box-shadow: var(--shadow-sm);
+}
+.fsel:focus { border-color: var(--gold); }
+option { background: white; }
+.divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+/* ── SLOT TAGS ── */
+.slot-tags { display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px; margin-bottom: 10px; }
+.stag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: white; border: 1px solid var(--border2);
+  border-radius: 20px; padding: 5px 12px;
+  font-size: 12px; font-weight: 700; color: var(--ink2);
+  box-shadow: var(--shadow-sm);
+}
+.stag-x { background: none; border: none; color: var(--red); cursor: pointer; font-size: 16px; line-height: 1; padding: 0; font-weight: 400; }
+.member-add-row { display: flex; gap: 8px; align-items: center; }
+
+/* ── MEMBER CHECKLIST PICKER ── */
+.mp-trigger-btn {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  background: white; border: 1px solid var(--border2);
+  border-radius: 10px; padding: 11px 14px;
+  font-size: 13px; font-weight: 700; color: var(--ink);
+  cursor: pointer; font-family: inherit; transition: all 0.18s;
+  box-shadow: var(--shadow-sm);
+}
+.mp-trigger-btn:hover { border-color: var(--gold); }
+.mp-trigger-count { font-size: 11px; font-weight: 800; color: var(--gold); background: var(--gold-pale); border-radius: 20px; padding: 2px 9px; }
+.mp-panel {
+  display: none; margin-top: 8px;
+  background: white; border: 1px solid var(--border2);
+  border-radius: 12px; overflow: hidden; box-shadow: var(--shadow);
+}
+.mp-panel.open { display: block; }
+.mp-panel-search {
+  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  background: white;
+}
+.mp-panel-search input {
+  width: 100%; border: 1px solid var(--border2); border-radius: 8px;
+  padding: 8px 12px; font-size: 13px; font-weight: 600;
+  font-family: inherit; outline: none; color: var(--ink);
+  transition: border-color 0.2s;
+}
+.mp-panel-search input:focus { border-color: var(--gold); }
+.mp-checklist { max-height: 230px; overflow-y: auto; padding: 4px 0; }
+.mp-check-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; cursor: pointer; transition: background 0.12s;
+  border-bottom: 1px solid var(--border);
+}
+.mp-check-item:last-child { border-bottom: none; }
+.mp-check-item:active { background: var(--cream2); }
+.mp-checkbox {
+  width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
+  border: 2px solid var(--border2); background: white;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; font-size: 12px; color: transparent;
+}
+.mp-check-item.checked .mp-checkbox {
+  background: var(--ink); border-color: var(--ink); color: var(--gold-light);
+}
+.mp-check-info { flex: 1; min-width: 0; }
+.mp-check-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.mp-check-phone { font-size: 11px; color: var(--ink4); font-weight: 500; margin-top: 1px; }
+.mp-check-slots { font-size: 10px; font-weight: 800; color: var(--gold); background: var(--gold-pale); border-radius: 8px; padding: 1px 7px; margin-left: 6px; }
+.mp-panel-footer {
+  padding: 10px 12px; border-top: 1px solid var(--border);
+  display: flex; gap: 8px; align-items: center; background: var(--cream);
+}
+.mp-done-btn {
+  flex: 1; background: var(--ink); color: var(--gold-light);
+  border: none; border-radius: 9px; padding: 10px;
+  font-size: 12px; font-weight: 800; cursor: pointer; font-family: inherit;
+}
+.mp-done-btn:active { transform: scale(0.97); }
+.mp-cancel-btn {
+  background: white; color: var(--ink3); border: 1px solid var(--border2);
+  border-radius: 9px; padding: 10px 14px;
+  font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+
+/* Selected member rows */
+.mp-selected-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.mp-sel-row {
+  display: flex; align-items: center; gap: 10px;
+  background: white; border: 1px solid var(--border2);
+  border-radius: 10px; padding: 10px 14px;
+  box-shadow: var(--shadow-sm);
+}
+.mp-sel-info { flex: 1; min-width: 0; }
+.mp-sel-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.mp-sel-meta { font-size: 11px; color: var(--ink3); font-weight: 500; margin-top: 2px; }
+.mp-sel-right { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.mp-sel-add {
+  width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border2);
+  background: var(--cream2); cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: var(--ink2); font-size: 15px; font-weight: 700;
+  line-height: 1; transition: all 0.15s;
+}
+.mp-sel-add:hover { background: var(--gold-pale); color: var(--gold); border-color: var(--gold-border); }
+.mp-sel-remove {
+  width: 24px; height: 24px; border-radius: 6px;
+  border: 1px solid var(--border2); background: white;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--ink3); font-size: 11px; font-weight: 700;
+  transition: all 0.15s;
+}
+.mp-sel-remove:hover { background: var(--red-pale); color: var(--red); border-color: rgba(176,58,46,0.25); }
+
+/* ── BUTTONS ── */
+.btn { padding: 13px 18px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; font-family: inherit; transition: all 0.18s; width: 100%; margin-top: 4px; letter-spacing: 0.3px; }
+.btn-dark { background: var(--ink); color: var(--gold-light); }
+.btn-ghost { background: white; color: var(--ink3); border: 1px solid var(--border2); }
+.btn-wa { background: var(--wa); color: white; }
+.btn:active { transform: scale(0.97); }
+.btn-sm { width: auto; padding: 9px 15px; font-size: 12px; border-radius: 9px; margin-top: 0; }
+.btn-row { display: flex; gap: 10px; margin-top: 16px; }
+
+/* ── EMPTY ── */
+.empty { text-align: center; padding: 60px 20px; }
+.empty-icon { font-size: 42px; margin-bottom: 14px; }
+.empty-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.empty-desc { font-size: 13px; color: var(--ink3); line-height: 1.6; font-weight: 500; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 96px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--ink); color: white;
+  padding: 10px 20px; border-radius: 25px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+  z-index: 600; opacity: 0; transition: all 0.25s;
+  white-space: nowrap; pointer-events: none;
+  box-shadow: var(--shadow-lg);
+}
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── BACKUP ── */
+.backup-btn {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: var(--cream2); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; flex-shrink: 0;
+  transition: all 0.15s;
+}
+.backup-btn:active { transform: scale(0.9); }
+.backup-info {
+  background: var(--cream2); border-radius: var(--r-sm);
+  padding: 14px 16px; margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+.backup-info p { font-size: 13px; color: var(--ink2); line-height: 1.6; font-weight: 500; }
+.backup-stat { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.backup-stat:last-child { border-bottom: none; }
+.backup-stat-label { font-size: 13px; color: var(--ink3); font-weight: 600; }
+.backup-stat-value { font-size: 13px; color: var(--ink); font-weight: 800; }
+.import-zone {
+  border: 2px dashed var(--border2); border-radius: var(--r-sm);
+  padding: 28px 20px; text-align: center; cursor: pointer;
+  transition: border-color 0.2s; margin-top: 4px;
+}
+.import-zone:hover { border-color: var(--gold); }
+.import-zone-icon { font-size: 30px; margin-bottom: 8px; }
+.import-zone-text { font-size: 14px; color: var(--ink2); font-weight: 700; }
+.import-zone-sub { font-size: 11px; color: var(--ink4); margin-top: 4px; font-weight: 500; }
+
+/* ── NO RESULTS ── */
+.no-results {
+  text-align: center; padding: 40px 20px;
+  font-size: 13px; color: var(--ink4); font-weight: 600;
+}
+.no-results span { font-size: 28px; display: block; margin-bottom: 10px; }
+
+/* ── BULK PAY STRIP ── */
+.bulk-strip {
+  background: var(--green-pale); border: 1px solid rgba(42,122,90,0.2);
+  border-radius: 10px; padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.bulk-strip-label { font-size: 12px; font-weight: 700; color: var(--green); }
+.bulk-strip-btn {
+  background: var(--green); color: white;
+  border: none; border-radius: 8px; padding: 7px 14px;
+  font-size: 11px; font-weight: 800; cursor: pointer; font-family: inherit;
+  transition: all 0.15s;
+}
+.bulk-strip-btn:active { transform: scale(0.93); }
+
+/* ── PAYMENT NOTES MODAL ── */
+.pay-mode-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 4px;
+}
+.pay-mode-btn {
+  padding: 9px 6px; border-radius: 9px;
+  border: 1px solid var(--border2); background: white;
+  font-size: 11px; font-weight: 700; color: var(--ink3);
+  cursor: pointer; font-family: inherit; transition: all 0.15s;
+  text-align: center;
+}
+.pay-mode-btn.on { background: var(--ink); color: var(--gold-light); border-color: var(--ink); }
+.pnotes-meta { font-size: 11px; color: var(--ink3); font-weight: 600; margin-bottom: 14px;
+  background: var(--cream2); border-radius: 8px; padding: 10px 12px; }
+
+/* ── DUE TAB ANALYTICS ── */
+.analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.analytics-card { background: white; border: 1px solid var(--border); border-radius: var(--r-sm); padding: 14px 16px; box-shadow: var(--shadow-sm); }
+.analytics-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ink4); margin-bottom: 6px; }
+.analytics-value { font-size: 20px; font-weight: 800; color: var(--ink); }
+.analytics-sub { font-size: 11px; color: var(--ink3); margin-top: 3px; font-weight: 500; }
+.analytics-wide { grid-column: 1 / -1; }
+.mode-bar { margin-bottom: 8px; }
+.mode-bar-label { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--ink2); margin-bottom: 4px; }
+.mode-bar-track { height: 6px; background: var(--cream3); border-radius: 3px; overflow: hidden; }
+.mode-bar-fill { height: 100%; border-radius: 3px; background: var(--ink); transition: width 0.4s; }
+.mode-bar-fill.gpay { background: #4285F4; }
+.mode-bar-fill.paytm { background: #00BAF2; }
+.mode-bar-fill.phonepe { background: #5F259F; }
+.mode-bar-fill.cash { background: var(--green); }
+.mode-bar-fill.netbanking { background: var(--amber); }
+.mode-bar-fill.others { background: var(--ink3); }
+
+/* ── BULK WA ── */
+.bwa-person-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; background: white; border: 1px solid var(--border2); border-radius: 10px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
+.bwa-person-item.on { border-color: var(--wa); background: var(--wa-pale); }
+.bwa-left { display: flex; align-items: center; gap: 10px; }
+.bwa-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.bwa-person-item.on .bwa-check { background: var(--wa); border-color: var(--wa); color: white; }
+.bwa-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.bwa-due { font-size: 11px; color: var(--red); font-weight: 700; margin-top: 2px; }
+.bwa-no-phone { font-size: 10px; color: var(--ink4); font-weight: 600; margin-top: 2px; }
+.bwa-actions { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
+.bwa-sel-all { font-size: 11px; font-weight: 800; color: var(--gold); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
+.bwa-count-badge { background: var(--wa); color: white; border-radius: 12px; padding: 3px 10px; font-size: 11px; font-weight: 800; margin-left: auto; }
+
+.wa-preview {
+  background: #DCF8C6; border-radius: 12px; padding: 14px 16px;
+  font-size: 13px; color: #1a1a1a; line-height: 1.6;
+  white-space: pre-wrap; font-family: inherit;
+  border: 1px solid rgba(37,211,102,0.2);
+  margin-bottom: 14px; font-weight: 500;
+}
+.wa-edit {
+  width: 100%; background: white; border: 1px solid var(--border2);
+  border-radius: 10px; padding: 12px 14px; color: var(--ink);
+  font-size: 13px; font-weight: 500; font-family: inherit; outline: none;
+  transition: border-color 0.2s; box-shadow: var(--shadow-sm);
+  resize: vertical; min-height: 100px;
+}
+.wa-edit:focus { border-color: var(--wa); }
+.wa-person-select {
+  background: white; border: 1px solid var(--border2);
+  border-radius: 10px; padding: 10px 14px; color: var(--ink);
+  font-size: 13px; font-weight: 600; font-family: inherit; outline: none;
+  width: 100%; box-shadow: var(--shadow-sm); margin-bottom: 14px;
+}
+
+/* Scroll-to-current button */
+.scroll-now-btn {
+  position: sticky; bottom: 16px; left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--ink); color: var(--gold-light);
+  border: none; border-radius: 20px; padding: 8px 16px;
+  font-size: 11px; font-weight: 800; cursor: pointer; font-family: inherit;
+  box-shadow: var(--shadow-lg); margin: 0 auto; letter-spacing: 0.3px;
+  z-index: 10; transition: all 0.15s;
+}
+.scroll-now-btn:active { transform: translateX(-50%) scale(0.95); }
+
+/* ── CHIT DETAIL ACTIONS ── */
+.detail-actions {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.detail-action-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: white; border: 1px solid var(--border2);
+  border-radius: 10px; padding: 10px 12px;
+  font-size: 11px; font-weight: 800; cursor: pointer; font-family: inherit;
+  color: var(--ink2); transition: all 0.15s; box-shadow: var(--shadow-sm);
+}
+.detail-action-btn.wa { color: var(--wa); border-color: rgba(37,211,102,0.3); background: var(--wa-pale); }
+.detail-action-btn:active { transform: scale(0.95); }
+
+/* ── MONTH NAV ARROWS ── */
+.month-nav-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 10px 14px;
+  margin-bottom: 14px; box-shadow: var(--shadow-sm);
+}
+.month-nav-arrow {
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid var(--border2); background: var(--cream);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--ink2); font-size: 16px; transition: all 0.15s;
+  flex-shrink: 0;
+}
+.month-nav-arrow:hover { background: var(--ink); color: var(--gold-light); border-color: var(--ink); }
+.month-nav-arrow:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+.month-nav-arrow:active { transform: scale(0.9); }
+.month-nav-info { text-align: center; }
+.month-nav-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+.month-nav-sub { font-size: 11px; color: var(--ink3); font-weight: 500; margin-top: 2px; }
+
+/* ── PROFESSIONAL ACTION BUTTONS (replacing emoji icons) ── */
+.action-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 7px;
+  border: 1px solid var(--border2); background: white;
+  font-size: 11px; font-weight: 700; color: var(--ink3);
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s; letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+.action-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+.action-btn:hover { background: var(--cream2); color: var(--ink); }
+.action-btn.danger:hover { background: var(--red-pale); color: var(--red); border-color: rgba(176,58,46,0.25); }
+.action-btn:active { transform: scale(0.95); }
+
+/* ── BACKUP REMINDER BANNER ── */
+.backup-banner {
+  display: none; align-items: center; gap: 10px;
+  background: #FEF3CD; border-bottom: 1px solid rgba(200,150,42,0.3);
+  padding: 10px 16px; flex-shrink: 0;
+  animation: slideDown 0.3s ease;
+}
+.backup-banner.on { display: flex; }
+@keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.backup-banner-icon { font-size: 18px; flex-shrink: 0; }
+.backup-banner-text { flex: 1; min-width: 0; }
+.backup-banner-title { font-size: 12px; font-weight: 800; color: var(--amber); letter-spacing: 0.2px; }
+.backup-banner-sub { font-size: 10px; color: var(--ink3); font-weight: 500; margin-top: 1px; }
+.backup-banner-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.banner-btn {
+  padding: 6px 11px; border-radius: 7px; font-size: 11px; font-weight: 800;
+  cursor: pointer; font-family: inherit; border: none; transition: all 0.15s;
+  white-space: nowrap;
+}
+.banner-btn-wa { background: var(--wa); color: white; }
+.banner-btn-dl { background: var(--ink); color: var(--gold-light); }
+.banner-btn-dismiss { background: transparent; color: var(--ink4); border: 1px solid var(--border2); }
+.banner-btn:active { transform: scale(0.93); }
+.month-summary-strip {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 14px 16px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; margin-bottom: 14px; box-shadow: var(--shadow-sm);
+}
+.mss-item { text-align: center; }
+.mss-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ink4); margin-bottom: 4px; }
+.mss-value { font-size: 15px; font-weight: 800; }
+.mss-value.green { color: var(--green); }
+.mss-value.red { color: var(--red); }
+.mss-value.amber { color: var(--amber); }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" fill="#F5C842"/>
+        </svg>
+      </div>
+      <span class="brand-name">Chit <span>Manager</span></span>
+    </div>
+    <div class="topbar-actions">
+      <button class="back-btn" id="back-btn" onclick="goBack()">← Back</button>
+      <span class="topbar-right" id="topbar-ctx"></span>
+      <button class="backup-btn" onclick="openModal('backup-modal')" title="Backup & Restore">💾</button>
+    </div>
+  </div>
+
+  <div class="nav" id="main-nav">
+    <div class="nav-item on" data-tab="chits" onclick="switchTab('chits')">Chits</div>
+    <div class="nav-item" data-tab="members" onclick="switchTab('members')">Members</div>
+    <div class="nav-item" data-tab="due" onclick="switchTab('due')">Due</div>
+    <div class="nav-item" data-tab="insights" onclick="switchTab('insights')">Insights</div>
+  </div>
+
+  <!-- BACKUP REMINDER BANNER -->
+  <div class="backup-banner" id="backup-banner">
+    <div class="backup-banner-icon">⚠️</div>
+    <div class="backup-banner-text">
+      <div class="backup-banner-title">Backup Overdue</div>
+      <div class="backup-banner-sub" id="banner-sub">Last backed up more than 1 day ago</div>
+    </div>
+    <div class="backup-banner-actions">
+      <button class="banner-btn banner-btn-wa" onclick="backupToWhatsApp()">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11" style="margin-right:3px;vertical-align:-1px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WA
+      </button>
+      <button class="banner-btn banner-btn-dl" onclick="exportData(); dismissBanner()">Save</button>
+      <button class="banner-btn banner-btn-dismiss" onclick="dismissBanner()">✕</button>
+    </div>
+  </div>
+
+  <div class="search-bar-wrap" id="search-wrap">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-inp" id="search-inp" placeholder="Search…" oninput="onSearch(this.value)">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">×</button>
+    </div>
+  </div>
+
+  <div class="scroll" id="scroll"></div>
+</div>
+
+<button class="fab" id="fab" onclick="fabClick()">+</button>
+<div class="toast" id="toast"></div>
+
+<!-- CHIT MODAL -->
+<div class="overlay" id="chit-modal" onclick="oClose(event,'chit-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="cm-title">New <span>Chit</span></div>
+    <div class="fg"><label class="fl">Chit Name</label><input class="fi" id="cm-name" placeholder="e.g. Gold Chit 2024"></div>
+    <div class="frow">
+      <div class="fg"><label class="fl">Chit Amount (₹)</label><input class="fi" id="cm-amount" type="number" placeholder="100000"></div>
+      <div class="fg"><label class="fl">Tenure (Months)</label><input class="fi" id="cm-tenure" type="number" placeholder="20"></div>
+    </div>
+    <div class="fg"><label class="fl">Monthly Payment (₹)</label><input class="fi" id="cm-monthly" type="number" placeholder="5000"><div class="fhint">Per slot per month</div></div>
+    <div class="frow">
+      <div class="fg"><label class="fl">Pre-Win (₹)</label><input class="fi" id="cm-prewin" type="number" placeholder="4500"></div>
+      <div class="fg"><label class="fl">Post-Win (₹)</label><input class="fi" id="cm-postwin" type="number" placeholder="4000"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label class="fl">Start Date</label><input class="fi" id="cm-start" type="date"></div>
+      <div class="fg"><label class="fl">Grace Period (Days)</label><input class="fi" id="cm-grace" type="number" value="10"></div>
+    </div>
+    <div class="fg"><label class="fl">Brokerage / Month (₹)</label><input class="fi" id="cm-brokerage" type="number" placeholder="e.g. 500"><div class="fhint">Your monthly earnings from this chit</div></div>
+    <div class="divider"></div>
+    <div class="fg">
+      <label class="fl">Member Slots</label>
+      <div class="fhint" style="margin-bottom:10px">Tick members to add · use +1 button for a second slot · same member can hold multiple slots</div>
+      <div class="mp-selected-list" id="cm-selected"></div>
+      <button class="mp-trigger-btn" onclick="toggleMPPanel()" id="mp-trigger">
+        <span>＋ Add / Remove Members</span>
+        <span class="mp-trigger-count" id="mp-trigger-count">0 added</span>
+      </button>
+      <div class="mp-panel" id="cm-mp-panel">
+        <div class="mp-panel-search">
+          <input id="cm-mp-search" placeholder="Search by name or phone…" oninput="filterMPChecklist()" autocomplete="off">
+        </div>
+        <div class="mp-checklist" id="cm-mp-checklist"></div>
+        <div class="mp-panel-footer">
+          <button class="mp-done-btn" onclick="closeMPPanel()">Done</button>
+          <button class="mp-cancel-btn" onclick="closeMPPanel()">Close</button>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('chit-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="saveChit()">Save Chit</button>
+    </div>
+  </div>
+</div>
+
+<!-- BACKUP MODAL -->
+<div class="overlay" id="backup-modal" onclick="oClose(event,'backup-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Data <span>Backup</span></div>
+
+    <div class="backup-info">
+      <p>Your data lives on this device. Export regularly to keep a safe copy — especially before changing phones or clearing your browser.</p>
+    </div>
+
+    <div id="backup-stats"></div>
+
+    <div class="slabel" style="margin-top:20px">Export</div>
+    <button class="btn btn-dark" onclick="exportData()" style="margin-bottom:10px">⬇ Download Backup File</button>
+    <button class="btn btn-wa" onclick="backupToWhatsApp()">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="margin-right:6px;vertical-align:-2px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Send Backup to WhatsApp (9949755955)
+    </button>
+    <div style="font-size:11px;color:var(--ink4);margin-top:8px;font-weight:500">Sends a summary + full data to your WhatsApp number as a saved message</div>
+
+    <div class="slabel" style="margin-top:24px">Import / Restore</div>
+    <div class="import-zone" onclick="document.getElementById('import-file').click()">
+      <div class="import-zone-icon">📂</div>
+      <div class="import-zone-text">Tap to select backup file</div>
+      <div class="import-zone-sub">Select a previously exported .json file</div>
+    </div>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+    <div style="font-size:11px;color:var(--red);margin-top:8px;font-weight:600">⚠ Importing will replace all current data</div>
+
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn btn-ghost" onclick="closeModal('backup-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBER MODAL -->
+<div class="overlay" id="member-modal" onclick="oClose(event,'member-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="mm-title">New <span>Member</span></div>
+    <div class="fg"><label class="fl">Full Name</label><input class="fi" id="mm-name" placeholder="e.g. Ramesh Kumar"></div>
+    <div class="fg"><label class="fl">Phone Number</label><input class="fi" id="mm-phone" type="tel" placeholder="9876543210"></div>
+    <div class="fg"><label class="fl">Notes</label><input class="fi" id="mm-notes" placeholder="Optional…"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('member-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="saveMember()">Save Member</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT NOTES MODAL -->
+<div class="overlay" id="pnotes-modal" onclick="oClose(event,'pnotes-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Payment <span>Details</span></div>
+    <div class="pnotes-meta" id="pnotes-meta"></div>
+    <div class="fg">
+      <label class="fl">Payment Mode</label>
+      <div class="pay-mode-grid" id="pnotes-modes">
+        <button class="pay-mode-btn" data-mode="gpay" onclick="selectMode('gpay')">GPay</button>
+        <button class="pay-mode-btn" data-mode="paytm" onclick="selectMode('paytm')">Paytm</button>
+        <button class="pay-mode-btn" data-mode="phonepe" onclick="selectMode('phonepe')">PhonePe</button>
+        <button class="pay-mode-btn" data-mode="cash" onclick="selectMode('cash')">Cash</button>
+        <button class="pay-mode-btn" data-mode="netbanking" onclick="selectMode('netbanking')">NetBanking</button>
+        <button class="pay-mode-btn" data-mode="others" onclick="selectMode('others')">Others</button>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fl">Payment Date</label>
+      <input class="fi" type="date" id="pnotes-date">
+    </div>
+    <div class="fg">
+      <label class="fl">Transaction / Reference No.</label>
+      <input class="fi" type="text" id="pnotes-txn" placeholder="e.g. UTR123456 (optional)">
+    </div>
+    <div class="fg">
+      <label class="fl">Notes</label>
+      <textarea class="wa-edit" id="pnotes-note" placeholder="Any additional notes…" style="min-height:72px"></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('pnotes-modal')">Cancel</button>
+      <button class="btn btn-dark" onclick="savePNotes()">Save Details</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBER WHATSAPP MODAL -->
+<div class="overlay" id="mwa-modal" onclick="oClose(event,'mwa-modal')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">WhatsApp <span>Reminder</span></div>
+    <div style="font-size:12px;color:var(--ink3);font-weight:600;margin-bottom:14px;background:var(--wa-pale);border:1px solid rgba(37,211,102,0.2);border-radius:9px;padding:10px 14px;">
+      Sending to: <span id="mwa-name" style="color:var(--ink);font-weight:800"></span>
+    </div>
+    <div class="fg">
+      <label class="fl">Message — Edit before sending</label>
+      <textarea class="wa-edit" id="mwa-edit" style="min-height:280px;font-size:12px;line-height:1.7"></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal('mwa-modal')">Cancel</button>
+      <button class="btn btn-wa" onclick="sendMemberWA()">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="margin-right:4px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Send on WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+let DB = JSON.parse(localStorage.getItem('cm_v3') || '{"chits":[],"members":[]}');
+function persist() { localStorage.setItem('cm_v3', JSON.stringify(DB)); }
+function uid() { return Math.random().toString(36).slice(2, 10); }
+function fmt(n) { if (n === undefined || n === null || n === '') return '—'; return Number(n).toLocaleString('en-IN'); }
+function R(n) { if (!n && n !== 0) return '—'; return '₹' + fmt(n); }
+function fmtDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return String(d.getDate()).padStart(2,'0') + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + d.getFullYear();
+}
+function ordinal(n) { const s=['th','st','nd','rd'],v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+
+// ═══════════════════════════════════════════════
+// NAV STATE
+// ═══════════════════════════════════════════════
+const S = { tab: 'chits', level: 'list', chitId: null, memberId: null, monthIdx: 0, query: '' };
+
+function switchTab(tab) {
+  S.tab = tab; S.level = 'list'; S.chitId = null; S.memberId = null; S.query = '';
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('on', n.dataset.tab === tab));
+  document.getElementById('back-btn').classList.remove('on');
+  document.getElementById('topbar-ctx').textContent = '';
+  document.getElementById('fab').classList.remove('off');
+  document.getElementById('search-inp').value = '';
+  document.getElementById('search-clear').classList.remove('on');
+  showSearchBar(true);
+  render();
+}
+
+function showSearchBar(show) {
+  document.getElementById('search-wrap').style.display = show ? 'block' : 'none';
+}
+
+function goBack() {
+  S.query = '';
+  document.getElementById('search-inp').value = '';
+  document.getElementById('search-clear').classList.remove('on');
+  if (S.level === 'month') { S.level = 'chit'; showSearchBar(false); renderChitDetail(); }
+  else if (S.level === 'chit') {
+    S.level = 'list'; S.chitId = null;
+    document.getElementById('back-btn').classList.remove('on');
+    document.getElementById('topbar-ctx').textContent = '';
+    document.getElementById('fab').classList.remove('off');
+    showSearchBar(true);
+    render();
+  } else if (S.level === 'member') {
+    S.level = 'list'; S.memberId = null;
+    document.getElementById('back-btn').classList.remove('on');
+    document.getElementById('topbar-ctx').textContent = '';
+    document.getElementById('fab').classList.remove('off');
+    showSearchBar(true);
+    render();
+  }
+}
+
+function render() {
+  if (S.tab === 'chits') {
+    if (S.level === 'list') renderChitList();
+    else if (S.level === 'chit') { showSearchBar(false); renderChitDetail(); }
+    else if (S.level === 'month') { showSearchBar(false); renderMonthDetail(); }
+  } else if (S.tab === 'members') {
+    if (S.level === 'list') renderMembers();
+    else if (S.level === 'member') { showSearchBar(false); renderMemberHistory(); }
+  } else if (S.tab === 'due') {
+    renderDue();
+  } else if (S.tab === 'insights') {
+    renderInsights();
+  }
+}
+
+function fabClick() {
+  if (S.tab === 'members') openMemberModal();
+  else if (S.tab === 'chits' && S.level === 'list') openChitModal();
+}
+
+// ═══════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════
+function onSearch(val) {
+  S.query = val.trim().toLowerCase();
+  document.getElementById('search-clear').classList.toggle('on', val.length > 0);
+  render();
+}
+function clearSearch() {
+  S.query = '';
+  document.getElementById('search-inp').value = '';
+  document.getElementById('search-clear').classList.remove('on');
+  render();
+}
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function getMember(id) { return DB.members.find(m => m.id === id) || { name: '?', phone: '' }; }
+function getChit() { return DB.chits.find(c => c.id === S.chitId); }
+
+function getMonthDate(chit, idx) {
+  if (!chit.startDate) return null;
+  const d = new Date(chit.startDate);
+  d.setMonth(d.getMonth() + idx);
+  return d;
+}
+
+function currentMonthIdx(chit) {
+  if (!chit.startDate) return 0;
+  const start = new Date(chit.startDate);
+  const now = new Date();
+  const diff = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+  return Math.max(0, Math.min(diff, (Number(chit.tenure) || 1) - 1));
+}
+
+function isPastGrace(chit, idx) {
+  const d = getMonthDate(chit, idx);
+  if (!d) return false;
+  const due = new Date(d); due.setDate(due.getDate() + (chit.grace || 10));
+  return idx <= currentMonthIdx(chit) && new Date() > due;
+}
+
+function slotExpected(chit, slot, idx) {
+  const pre = Number(chit.prewin) || Number(chit.monthly) || 0;
+  const post = Number(chit.postwin) || Number(chit.monthly) || 0;
+  if (chit.winners) {
+    const winEntry = Object.entries(chit.winners).find(([, w]) => w && w.slotId === slot.id);
+    if (winEntry && idx > Number(winEntry[0])) return post;
+  }
+  return pre;
+}
+
+function getPayment(chit, slotId, idx) {
+  return (chit.payments || {})[`${idx}_${slotId}`] || { status: 'unpaid', paidAmount: 0 };
+}
+
+function setPayment(chit, slotId, idx, data) {
+  if (!chit.payments) chit.payments = {};
+  chit.payments[`${idx}_${slotId}`] = data;
+}
+
+function slotDueAmount(chit, slotId) {
+  let due = 0;
+  const curIdx = currentMonthIdx(chit);
+  for (let i = 0; i <= curIdx; i++) {
+    if (!isPastGrace(chit, i)) continue;
+    const slot = (chit.slots || []).find(s => s.id === slotId);
+    if (!slot) continue;
+    const expected = slotExpected(chit, slot, i);
+    const pay = getPayment(chit, slotId, i);
+    if (pay.status === 'unpaid') due += expected;
+    else if (pay.status === 'partial') due += Math.max(0, expected - (Number(pay.paidAmount) || 0));
+  }
+  return due;
+}
+
+function memberTotalDue(memberId) {
+  let due = 0;
+  for (const chit of DB.chits) {
+    for (const s of (chit.slots || [])) {
+      if (s.memberId === memberId) due += slotDueAmount(chit, s.id);
+    }
+  }
+  return due;
+}
+
+function memberTotalPaid(memberId) {
+  let paid = 0;
+  for (const chit of DB.chits) {
+    for (const s of (chit.slots || [])) {
+      if (s.memberId !== memberId) continue;
+      const curIdx = currentMonthIdx(chit);
+      for (let i = 0; i <= curIdx; i++) {
+        const exp = slotExpected(chit, s, i);
+        const pay = getPayment(chit, s.id, i);
+        if (pay.status === 'paid') paid += exp;
+        else if (pay.status === 'partial') paid += (Number(pay.paidAmount) || 0);
+      }
+    }
+  }
+  return paid;
+}
+
+function monthLabel(chit, idx) {
+  const d = getMonthDate(chit, idx);
+  if (!d) return `Month ${idx + 1}`;
+  return d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+}
+
+function initials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
+
+// ═══════════════════════════════════════════════
+// CHIT LIST
+// ═══════════════════════════════════════════════
+function renderChitList() {
+  const el = document.getElementById('scroll');
+  document.getElementById('fab').classList.remove('off');
+  showSearchBar(true);
+  const q = S.query;
+  let chits = DB.chits;
+  if (q) chits = chits.filter(c => c.name.toLowerCase().includes(q) ||
+    (c.slots || []).some(s => getMember(s.memberId).name.toLowerCase().includes(q)));
+
+  if (!DB.chits.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🏦</div><div class="empty-title">No Chits Yet</div><div class="empty-desc">Tap + to create your first chit group.</div></div>`;
+    return;
+  }
+  if (!chits.length) {
+    el.innerHTML = `<div class="no-results"><span>🔍</span>No chits match "<strong>${q}</strong>"</div>`;
+    return;
+  }
+
+  el.innerHTML = chits.map(chit => {
+    const slots = chit.slots || [];
+    const curIdx = currentMonthIdx(chit);
+    const paid = slots.filter(s => getPayment(chit, s.id, curIdx).status === 'paid').length;
+    const totalDue = slots.reduce((sum, s) => sum + slotDueAmount(chit, s.id), 0);
+    const pct = slots.length ? Math.round(paid / slots.length * 100) : 0;
+    const winner = chit.winners?.[curIdx];
+    const winSlot = winner ? slots.find(s => s.id === winner.slotId) : null;
+    const winName = winSlot ? getMember(winSlot.memberId).name : null;
+
+    return `
+    <div class="chit-card" onclick="openChitDetail('${chit.id}')">
+      <div class="chit-card-top">
+        <div>
+          <div class="chit-name">${chit.name}</div>
+          <div class="chit-sub">Month ${curIdx + 1} of ${chit.tenure || '?'} · ${slots.length} slot${slots.length !== 1 ? 's' : ''}</div>
+        </div>
+        <span class="pill ${totalDue > 0 ? 'pill-red' : 'pill-green'}">${totalDue > 0 ? R(totalDue) + ' DUE' : 'CLEAR'}</span>
+      </div>
+      <div class="prog-strip"><div class="prog-fill ${pct < 100 ? 'partial' : ''}" style="width:${pct}%"></div></div>
+      <div class="chit-card-body">
+        <div class="kv-row">
+          <div class="kv"><div class="kv-label">Chit Amount</div><div class="kv-value gold">${R(chit.amount)}</div></div>
+          <div class="kv"><div class="kv-label">Monthly</div><div class="kv-value">${R(chit.monthly)}</div></div>
+          <div class="kv"><div class="kv-label">This Month</div><div class="kv-value">${paid}/${slots.length} paid</div></div>
+        </div>
+        ${chit.brokerage > 0 ? `
+        <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:8px 12px">
+          <span style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:0.3px">BROKERAGE / MONTH</span>
+          <span style="font-size:15px;font-weight:800;color:var(--gold)">₹${Number(chit.brokerage).toLocaleString('en-IN')}</span>
+        </div>` : ''}
+        ${winName ? `<div style="margin-top:12px;font-size:12px;color:var(--ink3);font-weight:600">🏆 Current winner: <span style="color:var(--gold);font-weight:700">${winName}</span></div>` : ''}
+      </div>
+      <div class="chit-card-foot">
+        <span class="foot-meta">${chit.startDate ? 'Started ' + fmtDate(chit.startDate) : 'No start date'}</span>
+        <div class="icon-btns" onclick="event.stopPropagation()">
+          <button class="action-btn" onclick="openChitModal(DB.chits.find(c=>c.id==='${chit.id}'))">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+          <button class="action-btn danger" onclick="deleteChit('${chit.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// CHIT DETAIL
+// ═══════════════════════════════════════════════
+function openChitDetail(id) {
+  S.level = 'chit'; S.chitId = id;
+  document.getElementById('back-btn').classList.add('on');
+  document.getElementById('fab').classList.add('off');
+  showSearchBar(false);
+  renderChitDetail();
+}
+
+function renderChitDetail() {
+  const chit = getChit();
+  if (!chit) return;
+  document.getElementById('topbar-ctx').textContent = chit.name;
+  const slots = chit.slots || [];
+  const tenure = Number(chit.tenure) || 0;
+  const curIdx = currentMonthIdx(chit);
+
+  let collected = 0, totalDue = 0;
+  for (let i = 0; i <= curIdx; i++) {
+    for (const s of slots) {
+      const exp = slotExpected(chit, s, i);
+      const pay = getPayment(chit, s.id, i);
+      if (pay.status === 'paid') collected += exp;
+      else if (pay.status === 'partial') {
+        collected += Number(pay.paidAmount) || 0;
+        if (isPastGrace(chit, i)) totalDue += Math.max(0, exp - (Number(pay.paidAmount) || 0));
+      } else if (isPastGrace(chit, i)) totalDue += exp;
+    }
+  }
+
+  const months = Array.from({ length: tenure }, (_, i) => {
+    const winner = chit.winners?.[i];
+    const wSlot = winner ? slots.find(s => s.id === winner.slotId) : null;
+    const wName = wSlot ? getMember(wSlot.memberId).name : null;
+    const paid = slots.filter(s => getPayment(chit, s.id, i).status === 'paid').length;
+    const isCur = i === curIdx; const isPast = i < curIdx; const isFuture = i > curIdx;
+    const due = isPastGrace(chit, i) && paid < slots.length;
+    let pill = '';
+    if (isFuture) pill = `<span class="pill pill-neutral">UPCOMING</span>`;
+    else if (paid === slots.length && slots.length > 0) pill = `<span class="pill pill-green">ALL PAID</span>`;
+    else if (due) pill = `<span class="pill pill-red">DUE</span>`;
+    else pill = `<span class="pill pill-amber">${paid}/${slots.length}</span>`;
+
+    return `
+    <div class="month-item" id="mi-${i}" onclick="openMonthDetail(${i})">
+      <div class="month-left">
+        <div class="month-num-box ${isCur ? 'cur' : isPast ? 'past' : ''}">${i + 1}</div>
+        <div>
+          <div class="month-title">${monthLabel(chit, i)}${isCur ? ' <span style="font-size:10px;color:var(--gold);font-weight:800;letter-spacing:1px">NOW</span>' : ''}</div>
+          <div class="month-desc">${wName ? '🏆 ' + wName : 'No winner'} · ${paid}/${slots.length} paid</div>
+        </div>
+      </div>
+      <div class="month-right">${pill}<span class="chevron">›</span></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('scroll').innerHTML = `
+    <div class="detail-hero">
+      <div class="hero-label">Chit Fund</div>
+      <div class="hero-name">${chit.name}</div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-label">Slots</div><div class="hero-stat-value">${slots.length}</div></div>
+        <div><div class="hero-stat-label">Collected</div><div class="hero-stat-value green">${R(collected)}</div></div>
+        <div><div class="hero-stat-label">Due</div><div class="hero-stat-value ${totalDue > 0 ? 'red' : 'green'}">${totalDue > 0 ? R(totalDue) : '₹0'}</div></div>
+      </div>
+    </div>
+    <div class="detail-actions">
+      <button class="detail-action-btn" onclick="openChitModal(DB.chits.find(c=>c.id==='${chit.id}'))">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit Chit
+      </button>
+    </div>
+    <div class="slabel">Months</div>
+    ${months}
+  `;
+
+  // Scroll current month into view after render
+  setTimeout(() => {
+    const cur = document.getElementById(`mi-${curIdx}`);
+    if (cur) cur.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+// ═══════════════════════════════════════════════
+// MONTH DETAIL
+// ═══════════════════════════════════════════════
+function openMonthDetail(idx) {
+  S.level = 'month'; S.monthIdx = idx;
+  showSearchBar(false);
+  renderMonthDetail();
+}
+
+function navigateMonth(delta) {
+  const chit = getChit(); if (!chit) return;
+  const tenure = Number(chit.tenure) || 1;
+  const newIdx = S.monthIdx + delta;
+  if (newIdx < 0 || newIdx >= tenure) return;
+  S.monthIdx = newIdx;
+  renderMonthDetail();
+  document.getElementById('scroll').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderMonthDetail() {
+  const chit = getChit();
+  if (!chit) return;
+  const idx = S.monthIdx;
+  const slots = chit.slots || [];
+  const winner = chit.winners?.[idx];
+  document.getElementById('topbar-ctx').textContent = `Month ${idx + 1}`;
+
+  const winOpts = slots.map(s => {
+    const m = getMember(s.memberId);
+    return `<option value="${s.id}" ${winner?.slotId === s.id ? 'selected' : ''}>${m.name}${s.tag ? ' [' + s.tag + ']' : ''}</option>`;
+  }).join('');
+
+  // Summary counts
+  let paidCount = 0, partialCount = 0, unpaidCount = 0;
+  slots.forEach(s => {
+    const pay = getPayment(chit, s.id, idx);
+    if (pay.status === 'paid') paidCount++;
+    else if (pay.status === 'partial') partialCount++;
+    else unpaidCount++;
+  });
+
+  const payRows = slots.map(s => {
+    const m = getMember(s.memberId);
+    const exp = slotExpected(chit, s, idx);
+    const pay = getPayment(chit, s.id, idx);
+    const isWin = winner?.slotId === s.id;
+    const isPaid = pay.status === 'paid';
+    const hasMeta = pay.mode || pay.txn || pay.note || pay.date;
+    const modeLabel = pay.mode ? `<span style="font-size:10px;font-weight:800;background:var(--cream2);color:var(--ink2);border-radius:6px;padding:2px 7px;margin-right:4px">${pay.mode.toUpperCase()}</span>` : '';
+    const dateLabel = pay.date ? `<span style="font-size:10px;color:var(--ink4);font-weight:600">${fmtDate(pay.date)}</span>` : '';
+    return `
+    <div class="pay-item ${isPaid ? 'paid-item' : ''}" id="pi-${s.id}">
+      <div class="pay-head">
+        <div class="pay-person-info">
+          <div class="ava sm">${initials(m.name)}</div>
+          <div>
+            <div class="pay-name">${m.name}${s.tag ? `<span class="pay-slot-tag">${s.tag}</span>` : ''}${isWin ? ' 🏆' : ''}</div>
+            <div class="pay-expected">Expected: ${R(exp)}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="pay-amt-big">${R(exp)}</div>
+          <button class="action-btn" style="flex-shrink:0" title="Payment details" onclick="openPNotes('${chit.id}','${s.id}',${idx})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Details
+          </button>
+        </div>
+      </div>
+      ${hasMeta ? `<div style="display:flex;align-items:center;gap:4px;margin-bottom:10px">${modeLabel}${dateLabel}${pay.txn ? `<span style="font-size:10px;color:var(--ink4);font-weight:600;margin-left:4px">Ref: ${pay.txn}</span>` : ''}</div>` : ''}
+      <div class="status-row">
+        <button class="s-btn ${pay.status === 'paid' ? 's-paid' : ''}" onclick="toggleStatus('${s.id}','paid')">✓ Paid</button>
+        <button class="s-btn ${pay.status === 'partial' ? 's-partial' : ''}" onclick="toggleStatus('${s.id}','partial')">Partial</button>
+        <button class="s-btn ${pay.status === 'unpaid' || !pay.status ? 's-due' : ''}" onclick="toggleStatus('${s.id}','unpaid')">Due</button>
+      </div>
+      <div class="partial-row ${pay.status === 'partial' ? 'on' : ''}" id="pr-${s.id}">
+        <span class="partial-label">Paid ₹</span>
+        <input class="fi" type="number" id="pa-${s.id}" value="${pay.paidAmount || ''}" placeholder="Amount paid" style="margin:0;padding:9px 12px;font-size:13px">
+        <span class="partial-label">/ ${R(exp)}</span>
+      </div>
+      ${pay.note ? `<div style="margin-top:10px;font-size:11px;color:var(--ink3);background:var(--cream2);border-radius:7px;padding:8px 10px;font-weight:500">💬 ${pay.note}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('scroll').innerHTML = `
+    <div class="month-nav-bar">
+      <button class="month-nav-arrow" onclick="navigateMonth(-1)" ${idx === 0 ? 'disabled' : ''}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="month-nav-info">
+        <div class="month-nav-title">Month ${idx + 1} — ${monthLabel(chit, idx)}</div>
+        <div class="month-nav-sub">${idx + 1} of ${chit.tenure || '?'} months${idx === currentMonthIdx(chit) ? ' · <span style="color:var(--gold);font-weight:800">Current</span>' : ''}</div>
+      </div>
+      <button class="month-nav-arrow" onclick="navigateMonth(1)" ${idx >= (Number(chit.tenure) || 1) - 1 ? 'disabled' : ''}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <div class="winner-section">
+      <div class="winner-heading">🏆 Winner — Month ${idx + 1}</div>
+      <select class="winner-select" id="winner-dd" onchange="saveWinner()">
+        <option value="">— No winner yet —</option>
+        ${winOpts}
+      </select>
+      ${winner ? (() => { const ws = slots.find(s => s.id === winner.slotId); const wm = ws ? getMember(ws.memberId) : null; return wm ? `<div class="winner-display"><span>👑</span><span class="winner-display-name">${wm.name} won this month</span></div>` : ''; })() : ''}
+    </div>
+
+    <div class="month-summary-strip">
+      <div class="mss-item"><div class="mss-label">Paid</div><div class="mss-value green">${paidCount}</div></div>
+      <div class="mss-item"><div class="mss-label">Partial</div><div class="mss-value amber">${partialCount}</div></div>
+      <div class="mss-item"><div class="mss-label">Due</div><div class="mss-value red">${unpaidCount}</div></div>
+    </div>
+
+    ${slots.length > 1 ? `
+    <div class="bulk-strip">
+      <span class="bulk-strip-label">✓ Mark all as Paid</span>
+      <button class="bulk-strip-btn" onclick="markAllPaid()">Bulk Pay</button>
+    </div>` : ''}
+
+    <div class="slabel">Payments — ${monthLabel(chit, idx)}</div>
+    ${slots.length === 0 ? '<div class="empty"><div class="empty-desc">No slots in this chit.</div></div>' : payRows}
+    <div style="margin-top:16px">
+      <button class="btn btn-dark" onclick="savePayments()">Save All Payments</button>
+    </div>
+  `;
+}
+
+function markAllPaid() {
+  const chit = getChit(); if (!chit) return;
+  (chit.slots || []).forEach(s => {
+    const pi = document.getElementById(`pi-${s.id}`); if (!pi) return;
+    toggleStatus(s.id, 'paid');
+  });
+  showToast('All marked as Paid');
+}
+
+function toggleStatus(slotId, status) {
+  const pi = document.getElementById(`pi-${slotId}`);
+  if (!pi) return;
+  pi.querySelectorAll('.s-btn').forEach(b => b.className = 's-btn');
+  if (status === 'paid') { pi.querySelectorAll('.s-btn')[0].classList.add('s-paid'); pi.classList.add('paid-item'); }
+  else if (status === 'partial') { pi.querySelectorAll('.s-btn')[1].classList.add('s-partial'); pi.classList.remove('paid-item'); }
+  else { pi.querySelectorAll('.s-btn')[2].classList.add('s-due'); pi.classList.remove('paid-item'); }
+  const pr = document.getElementById(`pr-${slotId}`);
+  if (pr) pr.classList.toggle('on', status === 'partial');
+  pi.dataset.status = status;
+}
+
+function saveWinner() {
+  const chit = getChit(); if (!chit) return;
+  const slotId = document.getElementById('winner-dd').value;
+  if (!chit.winners) chit.winners = {};
+  if (slotId) chit.winners[S.monthIdx] = { slotId };
+  else delete chit.winners[S.monthIdx];
+  persist(); showToast('Winner saved');
+  renderMonthDetail();
+}
+
+function savePayments() {
+  const chit = getChit(); if (!chit) return;
+  (chit.slots || []).forEach(s => {
+    const pi = document.getElementById(`pi-${s.id}`); if (!pi) return;
+    const btns = pi.querySelectorAll('.s-btn');
+    const status = pi.dataset.status || (btns[0].classList.contains('s-paid') ? 'paid' : btns[1].classList.contains('s-partial') ? 'partial' : 'unpaid');
+    const paEl = document.getElementById(`pa-${s.id}`);
+    const paidAmount = paEl ? Number(paEl.value) || 0 : 0;
+    // Preserve existing notes/mode/txn/date when saving
+    const existing = getPayment(chit, s.id, S.monthIdx);
+    setPayment(chit, s.id, S.monthIdx, { status, paidAmount, mode: existing.mode, date: existing.date, txn: existing.txn, note: existing.note });
+  });
+  persist(); showToast('Payments saved ✓');
+  renderMonthDetail();
+}
+
+// ═══════════════════════════════════════════════
+// PAYMENT NOTES
+// ═══════════════════════════════════════════════
+let _pnChitId, _pnSlotId, _pnIdx;
+
+function openPNotes(chitId, slotId, idx) {
+  _pnChitId = chitId; _pnSlotId = slotId; _pnIdx = idx;
+  const chit = DB.chits.find(c => c.id === chitId);
+  const slot = (chit?.slots || []).find(s => s.id === slotId);
+  const m = getMember(slot?.memberId);
+  const pay = getPayment(chit, slotId, idx);
+  const exp = slotExpected(chit, slot, idx);
+  document.getElementById('pnotes-meta').textContent = `${m.name} · ${monthLabel(chit, idx)} · Expected ${R(exp)}`;
+  // Mode buttons
+  document.querySelectorAll('.pay-mode-btn').forEach(b => b.classList.toggle('on', b.dataset.mode === (pay.mode || '')));
+  document.getElementById('pnotes-date').value = pay.date || new Date().toISOString().split('T')[0];
+  document.getElementById('pnotes-txn').value = pay.txn || '';
+  document.getElementById('pnotes-note').value = pay.note || '';
+  openModal('pnotes-modal');
+}
+
+function selectMode(mode) {
+  const current = document.querySelector('.pay-mode-btn.on');
+  if (current && current.dataset.mode === mode) {
+    current.classList.remove('on'); // toggle off
+  } else {
+    document.querySelectorAll('.pay-mode-btn').forEach(b => b.classList.remove('on'));
+    document.querySelector(`.pay-mode-btn[data-mode="${mode}"]`).classList.add('on');
+  }
+}
+
+function savePNotes() {
+  const chit = DB.chits.find(c => c.id === _pnChitId); if (!chit) return;
+  const pay = getPayment(chit, _pnSlotId, _pnIdx);
+  const modeEl = document.querySelector('.pay-mode-btn.on');
+  pay.mode = modeEl ? modeEl.dataset.mode : '';
+  pay.date = document.getElementById('pnotes-date').value || '';
+  pay.txn = document.getElementById('pnotes-txn').value.trim();
+  pay.note = document.getElementById('pnotes-note').value.trim();
+  setPayment(chit, _pnSlotId, _pnIdx, pay);
+  persist(); closeModal('pnotes-modal');
+  showToast('Details saved ✓');
+  renderMonthDetail();
+}
+
+// ═══════════════════════════════════════════════
+// MEMBERS
+// ═══════════════════════════════════════════════
+function renderMembers() {
+  document.getElementById('fab').classList.remove('off');
+  showSearchBar(true);
+  const el = document.getElementById('scroll');
+  const q = S.query;
+  let members = DB.members;
+  if (q) members = members.filter(m => m.name.toLowerCase().includes(q) || (m.phone || '').includes(q));
+
+  if (!DB.members.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">👥</div><div class="empty-title">No Members Yet</div><div class="empty-desc">Add members here. The same person can hold multiple slots in any chit.</div></div>`;
+    return;
+  }
+  if (!members.length) {
+    el.innerHTML = `<div class="no-results"><span>🔍</span>No members match "<strong>${q}</strong>"</div>`;
+    return;
+  }
+
+  el.innerHTML = '<div class="slabel">All Members</div>' + members.map(m => {
+    const totalSlots = DB.chits.reduce((n, c) => n + (c.slots || []).filter(s => s.memberId === m.id).length, 0);
+    const inChits = DB.chits.filter(c => (c.slots || []).some(s => s.memberId === m.id));
+    const due = memberTotalDue(m.id);
+    return `
+    <div class="person-card">
+      <div class="person-card-top" onclick="openMemberHistory('${m.id}')">
+        <div class="ava">${initials(m.name)}</div>
+        <div class="person-card-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <div class="pname">${m.name}</div>
+            ${due > 0 ? `<span class="pill pill-red" style="font-size:9px;padding:3px 8px">${R(due)}</span>` : '<span class="pill pill-green" style="font-size:9px;padding:3px 8px">CLEAR</span>'}
+          </div>
+          <div class="psub">${m.phone || 'No phone'} · ${totalSlots} slot${totalSlots !== 1 ? 's' : ''}</div>
+          ${inChits.length ? `<div class="p-chits">${inChits.map(c => c.name).join(', ')}</div>` : ''}
+        </div>
+      </div>
+      <div class="person-card-actions" onclick="event.stopPropagation()">
+        ${due > 0 && m.phone ? `
+        <button class="action-btn" style="color:var(--wa);border-color:rgba(37,211,102,0.3);background:var(--wa-pale)" onclick="openMemberWA('${m.id}')">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Remind
+        </button>` : ''}
+        <button class="action-btn" onclick="openMemberModal(DB.members.find(m=>m.id==='${m.id}'))">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="action-btn danger" onclick="deleteMember('${m.id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Delete
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// MEMBER HISTORY
+// ═══════════════════════════════════════════════
+function openMemberHistory(id) {
+  S.level = 'member'; S.memberId = id;
+  document.getElementById('back-btn').classList.add('on');
+  document.getElementById('fab').classList.add('off');
+  showSearchBar(false);
+  renderMemberHistory();
+}
+
+function renderMemberHistory() {
+  const m = DB.members.find(x => x.id === S.memberId);
+  if (!m) return;
+  document.getElementById('topbar-ctx').textContent = m.name;
+  const el = document.getElementById('scroll');
+
+  const totalPaid = memberTotalPaid(m.id);
+  const totalDue = memberTotalDue(m.id);
+  const totalSlots = DB.chits.reduce((n, c) => n + (c.slots || []).filter(s => s.memberId === m.id).length, 0);
+
+  // Build chit blocks
+  const chitBlocks = DB.chits
+    .filter(chit => (chit.slots || []).some(s => s.memberId === m.id))
+    .map((chit, ci) => {
+      const mySlots = (chit.slots || []).filter(s => s.memberId === m.id);
+      const curIdx = currentMonthIdx(chit);
+      const tenure = Number(chit.tenure) || 0;
+
+      let slotPaid = 0;
+      const rows = Array.from({ length: tenure }, (_, i) => {
+        const isFuture = i > curIdx;
+        const rowParts = mySlots.map(s => {
+          const exp = slotExpected(chit, s, i);
+          const pay = getPayment(chit, s.id, i);
+          if (pay.status === 'paid') slotPaid += exp;
+          else if (pay.status === 'partial') slotPaid += (Number(pay.paidAmount) || 0);
+
+          let amtTxt, cls;
+          if (isFuture) { amtTxt = R(exp); cls = 'future'; }
+          else if (pay.status === 'paid') { amtTxt = R(exp); cls = 'paid'; }
+          else if (pay.status === 'partial') { amtTxt = R(pay.paidAmount) + ' / ' + R(exp); cls = 'partial'; }
+          else { amtTxt = R(exp); cls = 'unpaid'; }
+
+          return { amtTxt, cls, tag: s.tag };
+        });
+
+        return rowParts.map(rp => `
+          <div class="hist-row">
+            <div class="hist-row-left">
+              <div class="hist-status-dot ${isFuture ? 'future' : rp.cls}"></div>
+              <span class="hist-month">${monthLabel(chit, i)}${mySlots.length > 1 && rp.tag ? ` <span class="pay-slot-tag">${rp.tag}</span>` : ''}</span>
+            </div>
+            <span class="hist-amt ${isFuture ? '' : rp.cls}">${rp.amtTxt}</span>
+          </div>`).join('');
+      }).join('');
+
+      const slotDue = mySlots.reduce((sum, s) => sum + slotDueAmount(chit, s.id), 0);
+
+      return `
+      <div class="history-chit-block">
+        <div class="hcb-head" id="hcb-head-${ci}" onclick="toggleHCB(${ci})">
+          <div>
+            <div class="hcb-name">${chit.name}</div>
+            <div class="hcb-meta">${mySlots.length} slot${mySlots.length !== 1 ? 's' : ''} · ${tenure} months</div>
+          </div>
+          <div class="hcb-right">
+            ${slotDue > 0 ? `<span class="pill pill-red">${R(slotDue)} DUE</span>` : `<span class="pill pill-green">CLEAR</span>`}
+            <span class="chevron" id="hcb-chev-${ci}">›</span>
+          </div>
+        </div>
+        <div class="hcb-body" id="hcb-${ci}">
+          ${rows}
+        </div>
+      </div>`;
+    }).join('');
+
+  el.innerHTML = `
+    <div class="member-hero">
+      <div class="ava md" style="flex-shrink:0;position:relative;z-index:1">${initials(m.name)}</div>
+      <div class="member-hero-info" style="position:relative;z-index:1">
+        <div class="member-hero-name">${m.name}</div>
+        <div class="member-hero-phone">${m.phone || 'No phone number'}</div>
+        <div class="member-hero-stats">
+          <div><div class="mhs-label">Slots</div><div class="mhs-value gold">${totalSlots}</div></div>
+          <div><div class="mhs-label">Paid</div><div class="mhs-value green">${R(totalPaid)}</div></div>
+          <div><div class="mhs-label">Due</div><div class="mhs-value ${totalDue > 0 ? 'red' : 'green'}">${totalDue > 0 ? R(totalDue) : '₹0'}</div></div>
+        </div>
+      </div>
+    </div>
+
+    ${m.phone && totalDue > 0 ? `
+    <div class="reminder-section">
+      <div class="reminder-heading">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp Reminder
+      </div>
+      <button class="wa-btn" onclick="openMemberWA('${m.id}')">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Send Reminder — ${R(totalDue)} due
+      </button>
+    </div>` : ''}
+
+    <div class="slabel">Payment History by Chit</div>
+    ${chitBlocks || '<div class="empty"><div class="empty-desc">This member has no chit slots yet.</div></div>'}
+  `;
+}
+
+function toggleHCB(ci) {
+  const body = document.getElementById(`hcb-${ci}`);
+  const head = document.getElementById(`hcb-head-${ci}`);
+  const chev = document.getElementById(`hcb-chev-${ci}`);
+  const open = body.classList.toggle('open');
+  head.classList.toggle('open', open);
+  chev.textContent = open ? '⌄' : '›';
+}
+
+// ═══════════════════════════════════════════════
+// WHATSAPP — Members tab only
+// ═══════════════════════════════════════════════
+let _waMemberId = null;
+
+// Format chit amount as "2 Lac", "5 Lac", "50K" etc
+function chitShortName(chit) {
+  const amt = Number(chit.amount) || 0;
+  let amtStr;
+  if (amt >= 100000) {
+    const lacs = amt / 100000;
+    amtStr = (lacs % 1 === 0 ? lacs : lacs.toFixed(1)) + ' Lac';
+  } else if (amt >= 1000) {
+    const k = amt / 1000;
+    amtStr = (k % 1 === 0 ? k : k.toFixed(1)) + 'K';
+  } else {
+    amtStr = '₹' + amt.toLocaleString('en-IN');
+  }
+  // Start month label e.g. Oct-24
+  const d = chit.startDate ? new Date(chit.startDate) : null;
+  const monthStr = d ? d.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' }).replace(' ', '-') : '';
+  return monthStr ? `${amtStr} Chit (${monthStr})` : `${amtStr} Chit`;
+}
+
+function buildWAMessage(member) {
+  const lines = [];
+  lines.push('*Immediate Payment Alert*');
+  lines.push('*Immediate Payment Alert*');
+  lines.push('*Immediate Payment Alert*');
+  lines.push('');
+  lines.push(`Dear ${member.name},`);
+  lines.push('');
+  lines.push('Please clear your outstanding chit fund payments:');
+  lines.push('');
+
+  let grand = 0;
+  let chitCount = 0;
+
+  for (const chit of DB.chits) {
+    const mySlots = (chit.slots || []).filter(s => s.memberId === member.id);
+    if (!mySlots.length) continue;
+
+    // Find the current due months for this member
+    const curIdx = currentMonthIdx(chit);
+    let chitDue = 0;
+    const dueMonths = [];
+
+    for (let i = 0; i <= curIdx; i++) {
+      if (!isPastGrace(chit, i)) continue;
+      for (const s of mySlots) {
+        const exp = slotExpected(chit, s, i);
+        const pay = getPayment(chit, s.id, i);
+        let due = 0;
+        if (pay.status === 'unpaid') due = exp;
+        else if (pay.status === 'partial') due = Math.max(0, exp - (Number(pay.paidAmount) || 0));
+        if (due > 0) {
+          chitDue += due;
+          // Track the latest due month for display
+          if (!dueMonths.find(d => d.idx === i)) {
+            const d = getMonthDate(chit, i);
+            const monthShort = d ? d.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' }).replace(' ', '-') : `Month ${i+1}`;
+            dueMonths.push({ idx: i, label: monthShort, exp });
+          }
+        }
+      }
+    }
+
+    if (chitDue <= 0) continue;
+
+    // Use the most recent due month for display
+    const latestDue = dueMonths[dueMonths.length - 1];
+    const monthNum = latestDue ? latestDue.idx + 1 : curIdx + 1;
+    const monthLabel2 = latestDue ? latestDue.label : '';
+    const amt = latestDue ? latestDue.exp : (Number(chit.monthly) || 0);
+    const amtFormatted = amt.toLocaleString('en-IN');
+
+    // Determine if member has won (affects amount label)
+    const hasWon = mySlots.some(s => {
+      if (!chit.winners) return false;
+      return Object.values(chit.winners).some(w => w && w.slotId === s.id);
+    });
+    const amtLabel = hasWon ? 'bidded member' : 'unbid';
+
+    lines.push(`📋 *${chitShortName(chit)}* — ${ordinal(monthNum)} Month Chit Payment (${monthLabel2})`);
+    lines.push(`   Amount Due: *₹${amtFormatted}/-* (${amtLabel})`);
+    if (dueMonths.length > 1) {
+      lines.push(`   ⚠ ${dueMonths.length} months pending · Total: *₹${chitDue.toLocaleString('en-IN')}/-*`);
+    }
+    lines.push('');
+    grand += chitDue;
+    chitCount++;
+  }
+
+  if (grand === 0) return null;
+
+  if (chitCount > 1) {
+    lines.push(`*Total Outstanding: ₹${grand.toLocaleString('en-IN')}/-*`);
+    lines.push('');
+  }
+
+  lines.push('Regards,');
+  lines.push('Majeti,');
+  lines.push('Ratna Chits,');
+  lines.push('Guntur.');
+  lines.push('');
+  lines.push('🤝💐🙏');
+
+  return lines.join('\n');
+}
+
+function openMemberWA(memberId) {
+  _waMemberId = memberId;
+  const m = getMember(memberId);
+  const msg = buildWAMessage(m);
+  if (!msg) { showToast('No outstanding dues for this member'); return; }
+  document.getElementById('mwa-name').textContent = m.name;
+  document.getElementById('mwa-edit').value = msg;
+  openModal('mwa-modal');
+}
+
+function sendMemberWA() {
+  const m = getMember(_waMemberId);
+  const msg = document.getElementById('mwa-edit').value.trim();
+  if (!msg) { showToast('Message is empty'); return; }
+  const phone = (m.phone || '').replace(/\D/g, '');
+  const base = phone ? `https://wa.me/91${phone}` : `https://wa.me/`;
+  window.open(`${base}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+  closeModal('mwa-modal');
+  showToast('Opening WhatsApp…');
+}
+
+// ═══════════════════════════════════════════════
+// DUE SUMMARY (clean — no analytics, no bulk WA)
+// ═══════════════════════════════════════════════
+function renderDue() {
+  document.getElementById('fab').classList.add('off');
+  showSearchBar(true);
+  const el = document.getElementById('scroll');
+  const q = S.query;
+
+  const byPerson = {};
+  const byChit = [];
+
+  for (const chit of DB.chits) {
+    let chitTotal = 0;
+    const memberDueMap = {};
+    for (const s of (chit.slots || [])) {
+      const due = slotDueAmount(chit, s.id);
+      if (due <= 0) continue;
+      chitTotal += due;
+      if (!memberDueMap[s.memberId]) memberDueMap[s.memberId] = 0;
+      memberDueMap[s.memberId] += due;
+    }
+    for (const [mid, due] of Object.entries(memberDueMap)) {
+      const m = getMember(mid);
+      if (!byPerson[mid]) byPerson[mid] = { name: m.name, phone: m.phone || '', totalDue: 0, chitBreakdown: [], memberId: mid };
+      byPerson[mid].totalDue += due;
+      byPerson[mid].chitBreakdown.push({ chitName: chit.name, due });
+    }
+    if (chitTotal > 0) {
+      byChit.push({
+        name: chit.name, total: chitTotal,
+        persons: Object.entries(memberDueMap).map(([mid, due]) => ({ name: getMember(mid).name, due }))
+      });
+    }
+  }
+
+  const grandTotal = Object.values(byPerson).reduce((s, p) => s + p.totalDue, 0);
+
+  if (grandTotal === 0) {
+    el.innerHTML = `
+      <div class="due-hero">
+        <div class="due-hero-label">Total Outstanding</div>
+        <div class="due-hero-amt clear">₹0</div>
+        <div class="due-hero-sub">All payments are clear 🎉</div>
+      </div>`;
+    return;
+  }
+
+  let persons = Object.values(byPerson).sort((a, b) => b.totalDue - a.totalDue);
+  let chits = byChit.sort((a, b) => b.total - a.total);
+  if (q) {
+    persons = persons.filter(p => p.name.toLowerCase().includes(q));
+    chits = chits.filter(c => c.name.toLowerCase().includes(q) || c.persons.some(p => p.name.toLowerCase().includes(q)));
+  }
+
+  const personHTML = persons.map((p, i) => `
+    <div class="due-person-row">
+      <div class="dpr-head" onclick="toggleDPR(${i})">
+        <div class="dpr-left">
+          <div class="ava sm">${initials(p.name)}</div>
+          <div>
+            <div class="dpr-name">${p.name}</div>
+            <div class="dpr-count">${p.chitBreakdown.length} chit${p.chitBreakdown.length !== 1 ? 's' : ''} · tap to expand</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px" onclick="event.stopPropagation()">
+          ${p.phone ? `
+          <button class="action-btn" style="color:var(--wa);border-color:rgba(37,211,102,0.3);background:var(--wa-pale);margin:0" onclick="openMemberWA('${p.memberId}')">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Remind
+          </button>` : ''}
+          <div class="dpr-amount">${R(p.totalDue)}</div>
+        </div>
+      </div>
+      <div class="dpr-body" id="dpr-${i}">
+        ${p.chitBreakdown.map(c => `
+          <div class="dpr-line">
+            <span class="dpr-line-name">${c.chitName}</span>
+            <span class="dpr-line-amt">${R(c.due)}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  const chitHTML = chits.map(c => `
+    <div class="due-chit-block">
+      <div class="dcb-head">
+        <div class="dcb-name">${c.name}</div>
+        <div class="dcb-total">${R(c.total)}</div>
+      </div>
+      ${c.persons.map(p => `
+        <div class="dcb-line">
+          <span class="dcb-person">${p.name}</span>
+          <span class="dcb-amt">${R(p.due)}</span>
+        </div>`).join('')}
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div class="due-hero">
+      <div class="due-hero-label">Total Outstanding</div>
+      <div class="due-hero-amt">${R(grandTotal)}</div>
+      <div class="due-hero-sub">Across all chits · ${Object.keys(byPerson).length} people</div>
+    </div>
+    ${q && !persons.length && !chits.length ? `<div class="no-results"><span>🔍</span>No matches for "<strong>${q}</strong>"</div>` : ''}
+    ${persons.length ? `<div class="slabel">By Person</div>${personHTML}` : ''}
+    ${chits.length ? `<div class="slabel">By Chit</div>${chitHTML}` : ''}
+  `;
+}
+
+// ═══════════════════════════════════════════════
+// INSIGHTS TAB
+// ═══════════════════════════════════════════════
+function renderInsights() {
+  document.getElementById('fab').classList.add('off');
+  showSearchBar(false);
+  const el = document.getElementById('scroll');
+
+  // Collect stats
+  const modeCounts = {};
+  let totalDaysArr = [];
+  const byPerson = {};
+  let totalCollected = 0, totalDue = 0, totalSlots = 0, paidCount = 0, partialCount = 0, unpaidCount = 0;
+  const chitStats = [];
+
+  for (const chit of DB.chits) {
+    const slots = chit.slots || [];
+    totalSlots += slots.length;
+    let chitCollected = 0, chitDue = 0;
+    const curIdx = currentMonthIdx(chit);
+
+    for (const s of slots) {
+      const due = slotDueAmount(chit, s.id);
+      totalDue += due;
+      chitDue += due;
+      if (!byPerson[s.memberId]) byPerson[s.memberId] = { totalDue: 0, totalPaid: 0 };
+      byPerson[s.memberId].totalDue += due;
+
+      for (let i = 0; i <= curIdx; i++) {
+        const exp = slotExpected(chit, s, i);
+        const pay = getPayment(chit, s.id, i);
+        if (pay.status === 'paid') { chitCollected += exp; totalCollected += exp; paidCount++; }
+        else if (pay.status === 'partial') { chitCollected += (Number(pay.paidAmount)||0); totalCollected += (Number(pay.paidAmount)||0); partialCount++; }
+        else if (i <= curIdx) unpaidCount++;
+      }
+    }
+
+    const payments = chit.payments || {};
+    for (const [key, pay] of Object.entries(payments)) {
+      if (pay.mode) modeCounts[pay.mode] = (modeCounts[pay.mode] || 0) + 1;
+      if (pay.date && pay.status === 'paid') {
+        const [idxStr] = key.split('_');
+        const monthDate = getMonthDate(chit, Number(idxStr));
+        if (monthDate) {
+          const diff = Math.round((new Date(pay.date) - monthDate) / 86400000);
+          if (diff >= 0 && diff <= 60) totalDaysArr.push(diff);
+        }
+      }
+    }
+
+    chitStats.push({ name: chit.name, collected: chitCollected, due: chitDue, slots: slots.length });
+  }
+
+  const grandTotal = totalCollected + totalDue;
+  const collectionRate = grandTotal > 0 ? Math.round(totalCollected / grandTotal * 100) : 100;
+  const avgDays = totalDaysArr.length ? Math.round(totalDaysArr.reduce((a,b)=>a+b,0)/totalDaysArr.length) : null;
+  const totalPayments = Object.values(modeCounts).reduce((a,b)=>a+b,0);
+  const arrearsPeople = Object.values(byPerson).filter(p => p.totalDue > 0).length;
+
+  const modeOrder = ['gpay','paytm','phonepe','cash','netbanking','others'];
+  const modeNames = { gpay:'GPay', paytm:'Paytm', phonepe:'PhonePe', cash:'Cash', netbanking:'NetBanking', others:'Others' };
+  let modeHTML = '';
+  if (totalPayments > 0) {
+    modeHTML = modeOrder.filter(k => modeCounts[k]).sort((a,b) => (modeCounts[b]||0)-(modeCounts[a]||0))
+      .map(k => {
+        const pct = Math.round((modeCounts[k]/totalPayments)*100);
+        return `<div class="mode-bar">
+          <div class="mode-bar-label"><span>${modeNames[k]}</span><span>${pct}% (${modeCounts[k]})</span></div>
+          <div class="mode-bar-track"><div class="mode-bar-fill ${k}" style="width:${pct}%"></div></div>
+        </div>`;
+      }).join('');
+  }
+
+  const topChits = [...chitStats].sort((a,b) => b.due - a.due).slice(0,5);
+
+  if (!DB.chits.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">No Data Yet</div><div class="empty-desc">Insights will appear once you add chits and record payments.</div></div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="slabel">Collection Overview</div>
+    <div class="analytics-grid">
+      <div class="analytics-card">
+        <div class="analytics-label">Total Collected</div>
+        <div class="analytics-value" style="color:var(--green)">${R(totalCollected)}</div>
+        <div class="analytics-sub">across all chits</div>
+      </div>
+      <div class="analytics-card">
+        <div class="analytics-label">Outstanding</div>
+        <div class="analytics-value" style="color:${totalDue > 0 ? 'var(--red)' : 'var(--green)'}">${totalDue > 0 ? R(totalDue) : '₹0'}</div>
+        <div class="analytics-sub">${arrearsPeople} people in arrears</div>
+      </div>
+      <div class="analytics-card">
+        <div class="analytics-label">Collection Rate</div>
+        <div class="analytics-value">${collectionRate}%</div>
+        <div class="analytics-sub">${paidCount} payments complete</div>
+      </div>
+      <div class="analytics-card">
+        <div class="analytics-label">Active Slots</div>
+        <div class="analytics-value">${totalSlots}</div>
+        <div class="analytics-sub">${DB.chits.length} chit${DB.chits.length !== 1 ? 's' : ''} · ${DB.members.length} members</div>
+      </div>
+      ${avgDays !== null ? `
+      <div class="analytics-card">
+        <div class="analytics-label">Avg. Days to Pay</div>
+        <div class="analytics-value">${avgDays}d</div>
+        <div class="analytics-sub">from due date</div>
+      </div>` : ''}
+      ${partialCount > 0 ? `
+      <div class="analytics-card">
+        <div class="analytics-label">Partial Payments</div>
+        <div class="analytics-value" style="color:var(--amber)">${partialCount}</div>
+        <div class="analytics-sub">slots partially paid</div>
+      </div>` : ''}
+    </div>
+
+    ${modeHTML ? `
+    <div class="slabel">Payment Modes</div>
+    <div class="analytics-card" style="margin-bottom:20px">
+      <div class="analytics-label" style="margin-bottom:14px">Based on ${totalPayments} recorded payments</div>
+      ${modeHTML}
+    </div>` : ''}
+
+    ${topChits.some(c => c.due > 0) ? `
+    <div class="slabel">Outstanding by Chit</div>
+    ${topChits.filter(c => c.due > 0).map(c => `
+      <div class="due-chit-block">
+        <div class="dcb-head">
+          <div class="dcb-name">${c.name}</div>
+          <div class="dcb-total" style="color:var(--red)">${R(c.due)}</div>
+        </div>
+        <div class="dcb-line">
+          <span class="dcb-person">Collected</span>
+          <span class="dcb-amt" style="color:var(--green)">${R(c.collected)}</span>
+        </div>
+      </div>`).join('')}` : ''}
+
+    ${DB.chits.some(c => c.brokerage > 0) ? (() => {
+      const chitsWithBrokerage = DB.chits.filter(c => c.brokerage > 0);
+      const totalMonthlyBrokerage = chitsWithBrokerage.reduce((s, c) => s + Number(c.brokerage), 0);
+
+      // Build ordered month entries: { key: 'YYYY-MM', label: 'Oct-24', val, date }
+      const monthMapRaw = {};
+      for (const chit of chitsWithBrokerage) {
+        const curIdx = currentMonthIdx(chit);
+        for (let i = 0; i <= curIdx; i++) {
+          const d = getMonthDate(chit, i);
+          if (!d) continue;
+          const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+          if (!monthMapRaw[key]) {
+            monthMapRaw[key] = {
+              label: d.toLocaleDateString('en-IN',{month:'short',year:'2-digit'}).replace(' ','-'),
+              val: 0, date: d
+            };
+          }
+          monthMapRaw[key].val += Number(chit.brokerage);
+        }
+      }
+
+      const allMonths = Object.entries(monthMapRaw).sort(([a],[b])=>a.localeCompare(b));
+      const totalEarned = allMonths.reduce((s,[,m])=>s+m.val,0);
+
+      // YTD: sum from Jan 1 of current year
+      const thisYear = new Date().getFullYear();
+      const ytd = allMonths.filter(([k])=>k.startsWith(thisYear)).reduce((s,[,m])=>s+m.val,0);
+
+      // Line chart — last 12 months, SVG
+      const chartMonths = allMonths.slice(-12);
+      const W = 300, H = 80, PAD = { l:8, r:8, t:18, b:22 };
+      const innerW = W - PAD.l - PAD.r;
+      const innerH = H - PAD.t - PAD.b;
+      const maxV = Math.max(...chartMonths.map(([,m])=>m.val), 1);
+      const n = chartMonths.length;
+
+      let svgContent = '';
+      if (n >= 2) {
+        // Draw gridline at top only
+        const points = chartMonths.map(([,m], i) => {
+          const x = PAD.l + (i / (n-1)) * innerW;
+          const y = PAD.t + innerH - (m.val / maxV) * innerH;
+          return { x, y, val: m.val, label: m.label };
+        });
+
+        // Shaded area under line
+        const areaPath = `M${points[0].x},${PAD.t+innerH} ` +
+          points.map(p=>`L${p.x},${p.y}`).join(' ') +
+          ` L${points[n-1].x},${PAD.t+innerH} Z`;
+
+        // Line path
+        const linePath = `M` + points.map(p=>`${p.x},${p.y}`).join(' L');
+
+        svgContent += `<path d="${areaPath}" fill="rgba(200,150,42,0.12)" stroke="none"/>`;
+        svgContent += `<path d="${linePath}" fill="none" stroke="#C8962A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+        // Show labels & dots only at first, middle, last — and anywhere val changes
+        const labelIdxs = new Set([0, Math.floor((n-1)/2), n-1]);
+        // also mark any month where value differs from previous
+        points.forEach((p,i) => { if (i > 0 && p.val !== points[i-1].val) { labelIdxs.add(i); labelIdxs.add(i-1); } });
+
+        points.forEach((p, i) => {
+          const showLabel = labelIdxs.has(i);
+          // dot
+          svgContent += `<circle cx="${p.x}" cy="${p.y}" r="${showLabel?3.5:2}" fill="${showLabel?'#C8962A':'#C8962A'}" stroke="white" stroke-width="1.5"/>`;
+          if (showLabel) {
+            // value above dot
+            svgContent += `<text x="${p.x}" y="${p.y-6}" text-anchor="middle" font-size="9" font-weight="700" fill="#C8962A">${p.val>=1000?(p.val/1000).toFixed(0)+'k':p.val}</text>`;
+            // month label below axis
+            svgContent += `<text x="${p.x}" y="${H-3}" text-anchor="middle" font-size="9" fill="#8C8680" font-weight="600">${p.label}</text>`;
+          }
+        });
+
+        // top gridline
+        svgContent += `<line x1="${PAD.l}" y1="${PAD.t}" x2="${W-PAD.r}" y2="${PAD.t}" stroke="rgba(28,26,23,0.06)" stroke-width="1"/>`;
+        svgContent += `<line x1="${PAD.l}" y1="${PAD.t+innerH}" x2="${W-PAD.r}" y2="${PAD.t+innerH}" stroke="rgba(28,26,23,0.06)" stroke-width="1"/>`;
+      }
+
+      const chitBreakdown = chitsWithBrokerage.map(c => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+          <div style="font-size:12px;font-weight:700;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">${c.name}</div>
+          <div style="font-size:13px;font-weight:800;color:var(--gold);flex-shrink:0">₹${Number(c.brokerage).toLocaleString('en-IN')}/mo</div>
+        </div>`).join('');
+
+      return `
+      <div class="slabel">Brokerage Earnings</div>
+      <div class="analytics-grid" style="margin-bottom:12px">
+        <div class="analytics-card">
+          <div class="analytics-label">Monthly</div>
+          <div class="analytics-value" style="color:var(--gold)">₹${totalMonthlyBrokerage.toLocaleString('en-IN')}</div>
+          <div class="analytics-sub">${chitsWithBrokerage.length} chit${chitsWithBrokerage.length!==1?'s':''} active</div>
+        </div>
+        <div class="analytics-card">
+          <div class="analytics-label">YTD ${thisYear}</div>
+          <div class="analytics-value" style="color:var(--gold)">₹${ytd.toLocaleString('en-IN')}</div>
+          <div class="analytics-sub">Jan–now</div>
+        </div>
+        <div class="analytics-card">
+          <div class="analytics-label">Total Earned</div>
+          <div class="analytics-value" style="color:var(--gold)">₹${totalEarned.toLocaleString('en-IN')}</div>
+          <div class="analytics-sub">since start</div>
+        </div>
+      </div>
+
+      ${n >= 2 ? `
+      <div class="analytics-card" style="margin-bottom:12px">
+        <div class="analytics-label" style="margin-bottom:10px">Earnings Trend</div>
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;overflow:visible">
+          ${svgContent}
+        </svg>
+      </div>` : ''}
+
+      <div class="analytics-card" style="margin-bottom:12px">
+        <div class="analytics-label" style="margin-bottom:12px">Calculate Between Dates</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input type="date" id="brk-from" class="fi" style="flex:1;min-width:110px;padding:8px 10px;font-size:12px">
+          <span style="font-size:12px;color:var(--ink4);font-weight:600">to</span>
+          <input type="date" id="brk-to" class="fi" style="flex:1;min-width:110px;padding:8px 10px;font-size:12px">
+          <button onclick="calcBrokerageRange()" class="btn btn-dark btn-sm" style="flex-shrink:0;margin-top:0">Calc</button>
+        </div>
+        <div id="brk-result" style="margin-top:12px;display:none;background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:8px;padding:12px 14px">
+          <div style="font-size:10px;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Brokerage Earned</div>
+          <div id="brk-result-amt" style="font-size:22px;font-weight:800;color:var(--gold)"></div>
+          <div id="brk-result-sub" style="font-size:11px;color:var(--ink3);font-weight:500;margin-top:3px"></div>
+          <div id="brk-result-breakdown" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div class="analytics-card" style="margin-bottom:20px">
+        <div class="analytics-label" style="margin-bottom:4px">Per Chit</div>
+        ${chitBreakdown}
+      </div>`;
+    })() : ''}
+  `;
+}
+
+function toggleDPR(i) {
+  const el = document.getElementById(`dpr-${i}`);
+  el.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════
+// BROKERAGE DATE RANGE CALCULATOR
+// ═══════════════════════════════════════════════
+function calcBrokerageRange() {
+  const fromStr = document.getElementById('brk-from')?.value;
+  const toStr   = document.getElementById('brk-to')?.value;
+  const result  = document.getElementById('brk-result');
+  if (!fromStr || !toStr) { showToast('Pick both dates'); return; }
+
+  const from = new Date(fromStr);
+  const to   = new Date(toStr);
+  if (from > to) { showToast('From date must be before To date'); return; }
+
+  const chitsWithBrokerage = DB.chits.filter(c => c.brokerage > 0);
+  let grand = 0;
+  const breakdown = [];
+
+  for (const chit of chitsWithBrokerage) {
+    const curIdx = currentMonthIdx(chit);
+    let chitTotal = 0;
+    for (let i = 0; i <= curIdx; i++) {
+      const d = getMonthDate(chit, i);
+      if (!d) continue;
+      // Month qualifies if it falls within the from–to range (month start >= from && month start <= to)
+      if (d >= from && d <= to) {
+        chitTotal += Number(chit.brokerage);
+      }
+    }
+    if (chitTotal > 0) {
+      grand += chitTotal;
+      breakdown.push({ name: chit.name, total: chitTotal });
+    }
+  }
+
+  const fmt = d => d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+  const months = breakdown.reduce((s,b)=>s + Math.round(b.total / (DB.chits.find(c=>c.name===b.name)?.brokerage||1)), 0);
+
+  document.getElementById('brk-result-amt').textContent = `₹${grand.toLocaleString('en-IN')}`;
+  document.getElementById('brk-result-sub').textContent = `${fmt(from)} → ${fmt(to)}`;
+  document.getElementById('brk-result-breakdown').innerHTML = breakdown.length > 1
+    ? breakdown.map(b => `<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);font-weight:600;margin-top:4px"><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px">${b.name}</span><span style="color:var(--gold);font-weight:700">₹${b.total.toLocaleString('en-IN')}</span></div>`).join('')
+    : '';
+
+  result.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════
+// CHIT MODAL — checklist member picker
+// ═══════════════════════════════════════════════
+let _eid = null, _slots = [];
+
+function openChitModal(chit = null) {
+  _eid = chit?.id || null;
+  _slots = chit ? JSON.parse(JSON.stringify(chit.slots || [])) : [];
+  document.getElementById('cm-title').innerHTML = chit ? 'Edit <span>Chit</span>' : 'New <span>Chit</span>';
+  document.getElementById('cm-name').value = chit?.name || '';
+  document.getElementById('cm-amount').value = chit?.amount || '';
+  document.getElementById('cm-tenure').value = chit?.tenure || '';
+  document.getElementById('cm-monthly').value = chit?.monthly || '';
+  document.getElementById('cm-prewin').value = chit?.prewin || '';
+  document.getElementById('cm-postwin').value = chit?.postwin || '';
+  document.getElementById('cm-grace').value = chit?.grace || 10;
+  document.getElementById('cm-start').value = chit?.startDate || new Date().toISOString().split('T')[0];
+  document.getElementById('cm-brokerage').value = chit?.brokerage || '';
+  // Close panel if open
+  const panel = document.getElementById('cm-mp-panel');
+  if (panel) panel.classList.remove('open');
+  renderSelectedSlots();
+  openModal('chit-modal');
+}
+
+function toggleMPPanel() {
+  const panel = document.getElementById('cm-mp-panel');
+  if (!panel) return;
+  const isOpen = panel.classList.toggle('open');
+  if (isOpen) {
+    document.getElementById('cm-mp-search').value = '';
+    renderMPChecklist();
+    setTimeout(() => document.getElementById('cm-mp-search').focus(), 100);
+  }
+}
+
+function closeMPPanel() {
+  const panel = document.getElementById('cm-mp-panel');
+  if (panel) panel.classList.remove('open');
+}
+
+function renderMPChecklist(query = '') {
+  const container = document.getElementById('cm-mp-checklist');
+  if (!container) return;
+  const q = query.toLowerCase();
+  const filtered = DB.members.filter(m =>
+    !q || m.name.toLowerCase().includes(q) || (m.phone || '').includes(q)
+  );
+  if (!filtered.length) {
+    container.innerHTML = `<div style="padding:14px;text-align:center;font-size:12px;color:var(--ink4);font-weight:500">${DB.members.length ? 'No members match' : 'No members yet — add in Members tab first'}</div>`;
+    return;
+  }
+  container.innerHTML = filtered.map(m => {
+    const count = _slots.filter(s => s.memberId === m.id).length;
+    const checked = count > 0;
+    return `
+    <div class="mp-check-item ${checked ? 'checked' : ''}" id="mpci-${m.id}" onclick="toggleMPMember('${m.id}')">
+      <div class="mp-checkbox">✓</div>
+      <div class="ava sm" style="flex-shrink:0">${initials(m.name)}</div>
+      <div class="mp-check-info">
+        <div class="mp-check-name">${m.name}${count > 1 ? `<span class="mp-check-slots">${count} slots</span>` : ''}</div>
+        <div class="mp-check-phone">${m.phone || 'No phone'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterMPChecklist() {
+  const q = document.getElementById('cm-mp-search').value || '';
+  renderMPChecklist(q);
+}
+
+function toggleMPMember(mid) {
+  const alreadyIn = _slots.some(s => s.memberId === mid);
+  if (alreadyIn) {
+    // Remove ALL slots for this member
+    _slots = _slots.filter(s => s.memberId !== mid);
+  } else {
+    // Add one slot
+    _slots.push({ id: uid(), memberId: mid, tag: '' });
+  }
+  // Re-tag slots per member
+  retagSlots();
+  renderSelectedSlots();
+  // Update checklist item state without full re-render (preserves scroll + search)
+  const item = document.getElementById(`mpci-${mid}`);
+  if (item) {
+    const count = _slots.filter(s => s.memberId === mid).length;
+    item.classList.toggle('checked', count > 0);
+    const nameEl = item.querySelector('.mp-check-name');
+    if (nameEl) {
+      const m = getMember(mid);
+      nameEl.innerHTML = m.name + (count > 1 ? `<span class="mp-check-slots">${count} slots</span>` : '');
+    }
+  }
+}
+
+function retagSlots() {
+  // Group by memberId and assign tags S1, S2 etc only if >1 slot
+  const memberSlotCounts = {};
+  _slots.forEach(s => { memberSlotCounts[s.memberId] = (memberSlotCounts[s.memberId] || 0) + 1; });
+  const memberCounters = {};
+  _slots.forEach(s => {
+    const total = memberSlotCounts[s.memberId];
+    if (total > 1) {
+      memberCounters[s.memberId] = (memberCounters[s.memberId] || 0) + 1;
+      s.tag = `S${memberCounters[s.memberId]}`;
+    } else {
+      s.tag = '';
+    }
+  });
+}
+
+function addExtraSlot(mid) {
+  _slots.push({ id: uid(), memberId: mid, tag: '' });
+  retagSlots();
+  renderSelectedSlots();
+  // Update checklist if open
+  const item = document.getElementById(`mpci-${mid}`);
+  if (item) {
+    const count = _slots.filter(s => s.memberId === mid).length;
+    item.classList.add('checked');
+    const nameEl = item.querySelector('.mp-check-name');
+    if (nameEl) {
+      const m = getMember(mid);
+      nameEl.innerHTML = m.name + (count > 1 ? `<span class="mp-check-slots">${count} slots</span>` : '');
+    }
+  }
+  showToast(`Extra slot added`);
+}
+
+function renderSelectedSlots() {
+  const container = document.getElementById('cm-selected');
+  const triggerCount = document.getElementById('mp-trigger-count');
+  if (triggerCount) triggerCount.textContent = `${_slots.length} added`;
+  if (!container) return;
+  if (!_slots.length) {
+    container.innerHTML = '';
+    return;
+  }
+  container.innerHTML = _slots.map(s => {
+    const m = getMember(s.memberId);
+    const memberSlots = _slots.filter(x => x.memberId === s.memberId);
+    return `
+    <div class="mp-sel-row">
+      <div class="ava sm" style="flex-shrink:0">${initials(m.name)}</div>
+      <div class="mp-sel-info">
+        <div class="mp-sel-name">${m.name}${s.tag ? ` <span class="pay-slot-tag">${s.tag}</span>` : ''}</div>
+        <div class="mp-sel-meta">${m.phone || 'No phone'}</div>
+      </div>
+      <div class="mp-sel-right">
+        <button class="mp-sel-add" onclick="addExtraSlot('${s.memberId}')" title="Add another slot for this member">+</button>
+        <button class="mp-sel-remove" onclick="removeSlot('${s.id}')" title="Remove this slot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="12" height="12"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function removeSlot(id) {
+  _slots = _slots.filter(s => s.id !== id);
+  retagSlots();
+  renderSelectedSlots();
+  // Update checklist if open
+  renderMPChecklist(document.getElementById('cm-mp-search')?.value || '');
+}
+
+function saveChit() {
+  const name = document.getElementById('cm-name').value.trim();
+  if (!name) { showToast('Enter a chit name'); return; }
+  const chit = {
+    id: _eid || uid(), name,
+    amount: document.getElementById('cm-amount').value,
+    tenure: document.getElementById('cm-tenure').value,
+    monthly: document.getElementById('cm-monthly').value,
+    prewin: document.getElementById('cm-prewin').value,
+    postwin: document.getElementById('cm-postwin').value,
+    startDate: document.getElementById('cm-start').value,
+    grace: Number(document.getElementById('cm-grace').value) || 10,
+    brokerage: Number(document.getElementById('cm-brokerage').value) || 0,
+    slots: _slots,
+  };
+  if (_eid) {
+    const idx = DB.chits.findIndex(c => c.id === _eid);
+    if (idx !== -1) { chit.payments = DB.chits[idx].payments; chit.winners = DB.chits[idx].winners; DB.chits[idx] = chit; }
+  } else DB.chits.push(chit);
+  persist(); closeModal('chit-modal'); render();
+  showToast(_eid ? 'Chit updated' : 'Chit created');
+}
+
+function deleteChit(id) {
+  if (!confirm('Delete this chit and all payment data?')) return;
+  DB.chits = DB.chits.filter(c => c.id !== id);
+  persist(); render(); showToast('Chit deleted');
+}
+
+// ═══════════════════════════════════════════════
+// MEMBER MODAL
+// ═══════════════════════════════════════════════
+let _eidM = null;
+
+function openMemberModal(m = null) {
+  _eidM = m?.id || null;
+  document.getElementById('mm-title').innerHTML = m ? 'Edit <span>Member</span>' : 'New <span>Member</span>';
+  document.getElementById('mm-name').value = m?.name || '';
+  document.getElementById('mm-phone').value = m?.phone || '';
+  document.getElementById('mm-notes').value = m?.notes || '';
+  openModal('member-modal');
+}
+
+function saveMember() {
+  const name = document.getElementById('mm-name').value.trim();
+  if (!name) { showToast('Enter a name'); return; }
+  const m = { id: _eidM || uid(), name, phone: document.getElementById('mm-phone').value.trim(), notes: document.getElementById('mm-notes').value.trim() };
+  if (_eidM) { const i = DB.members.findIndex(x => x.id === _eidM); if (i !== -1) DB.members[i] = m; }
+  else DB.members.push(m);
+  persist(); closeModal('member-modal'); render();
+  showToast(_eidM ? 'Member updated' : 'Member added');
+}
+
+function deleteMember(id) {
+  const inUse = DB.chits.some(c => (c.slots || []).some(s => s.memberId === id));
+  if (inUse && !confirm('This member has slots in chits. Delete anyway?')) return;
+  DB.members = DB.members.filter(m => m.id !== id);
+  persist(); render(); showToast('Member deleted');
+}
+
+// ═══════════════════════════════════════════════
+// MODAL HELPERS
+// ═══════════════════════════════════════════════
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+function oClose(e, id) { if (e.target === e.currentTarget) closeModal(id); }
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+// ═══════════════════════════════════════════════
+// BACKUP — EXPORT & IMPORT
+// ═══════════════════════════════════════════════
+function openModal(id) {
+  if (id === 'backup-modal') {
+    const totalSlots = DB.chits.reduce((n, c) => n + (c.slots || []).length, 0);
+    const sizeKB = (new Blob([JSON.stringify(DB)]).size / 1024).toFixed(1);
+    const lastExport = localStorage.getItem('cm_last_export');
+    document.getElementById('backup-stats').innerHTML = `
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r-sm);padding:4px 16px">
+        <div class="backup-stat"><span class="backup-stat-label">Total Chits</span><span class="backup-stat-value">${DB.chits.length}</span></div>
+        <div class="backup-stat"><span class="backup-stat-label">Total Members</span><span class="backup-stat-value">${DB.members.length}</span></div>
+        <div class="backup-stat"><span class="backup-stat-label">Total Slots</span><span class="backup-stat-value">${totalSlots}</span></div>
+        <div class="backup-stat"><span class="backup-stat-label">Data Size</span><span class="backup-stat-value">${sizeKB} KB</span></div>
+        <div class="backup-stat"><span class="backup-stat-label">Last Exported</span><span class="backup-stat-value">${lastExport ? fmtDate(lastExport) : 'Never'}</span></div>
+      </div>`;
+  }
+  document.getElementById(id).classList.add('on');
+}
+
+function exportData() {
+  const now = new Date();
+  const blob = new Blob([JSON.stringify({ ...DB, _exportedAt: now.toISOString(), _version: 'cm_v3' }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `chit-backup-${now.toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  localStorage.setItem('cm_last_export', now.toISOString());
+  dismissBanner();
+  showToast('Backup downloaded ✓');
+  openModal('backup-modal');
+}
+
+function importData(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed.chits || !parsed.members) { showToast('Invalid backup file'); return; }
+      const dateStr = parsed._exportedAt ? fmtDate(parsed._exportedAt) : 'unknown date';
+      if (!confirm(`Replace all current data with backup from ${dateStr}?\n\nThis cannot be undone.`)) return;
+      DB = { chits: parsed.chits, members: parsed.members };
+      persist(); closeModal('backup-modal'); render();
+      showToast('Data restored ✓');
+    } catch { showToast('Could not read file'); }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+render();
+checkBackupBanner();
+
+// ═══════════════════════════════════════════════
+// BACKUP BANNER
+// ═══════════════════════════════════════════════
+function checkBackupBanner() {
+  const lastExport = localStorage.getItem('cm_last_export');
+  const dismissed = localStorage.getItem('cm_banner_dismissed');
+  const banner = document.getElementById('backup-banner');
+  if (!banner) return;
+
+  // Don't show if no data yet
+  if (!DB.chits.length && !DB.members.length) return;
+
+  const now = new Date();
+
+  // If dismissed today, don't show again until tomorrow
+  if (dismissed) {
+    const dismissedDate = new Date(dismissed);
+    if (dismissedDate.toDateString() === now.toDateString()) return;
+  }
+
+  // Show if never backed up, or last backup > 1 day ago
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  if (!lastExport || (now - new Date(lastExport)) > oneDayMs) {
+    const sub = document.getElementById('banner-sub');
+    if (sub) {
+      if (!lastExport) {
+        sub.textContent = 'You have never backed up your data';
+      } else {
+        const daysAgo = Math.floor((now - new Date(lastExport)) / oneDayMs);
+        sub.textContent = `Last backed up ${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago`;
+      }
+    }
+    banner.classList.add('on');
+  }
+}
+
+function dismissBanner() {
+  const banner = document.getElementById('backup-banner');
+  if (banner) banner.classList.remove('on');
+  localStorage.setItem('cm_banner_dismissed', new Date().toISOString());
+}
+
+// ═══════════════════════════════════════════════
+// WHATSAPP BACKUP
+// ═══════════════════════════════════════════════
+function backupToWhatsApp() {
+  const now = new Date();
+  const totalSlots = DB.chits.reduce((n, c) => n + (c.slots || []).length, 0);
+  const totalDueAmt = DB.members.reduce((sum, m) => sum + memberTotalDue(m.id), 0);
+
+  // Build a readable summary + compact data payload
+  const lines = [];
+  lines.push('🔐 *Chit Manager Backup*');
+  lines.push(`📅 ${fmtDate(now.toISOString())} at ${now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`);
+  lines.push('');
+  lines.push(`📊 *Summary*`);
+  lines.push(`• Chits: ${DB.chits.length}`);
+  lines.push(`• Members: ${DB.members.length}`);
+  lines.push(`• Total Slots: ${totalSlots}`);
+  lines.push(`• Outstanding: ₹${totalDueAmt.toLocaleString('en-IN')}`);
+  lines.push('');
+  lines.push('📋 *Chits*');
+  DB.chits.forEach(c => {
+    const due = (c.slots || []).reduce((s, sl) => s + slotDueAmount(c, sl.id), 0);
+    lines.push(`• ${c.name} — ${(c.slots||[]).length} slots${due > 0 ? ` · ₹${due.toLocaleString('en-IN')} due` : ' · Clear'}`);
+  });
+  lines.push('');
+  lines.push('👥 *Members with dues*');
+  const withDues = DB.members.filter(m => memberTotalDue(m.id) > 0);
+  if (withDues.length === 0) {
+    lines.push('• All clear 🎉');
+  } else {
+    withDues.forEach(m => {
+      lines.push(`• ${m.name} — ₹${memberTotalDue(m.id).toLocaleString('en-IN')} due`);
+    });
+  }
+  lines.push('');
+  lines.push('_Ratna Chits, Guntur_');
+
+  const msg = lines.join('\n');
+  const url = `https://wa.me/919949755955?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank', 'noopener');
+
+  // Mark as backed up
+  localStorage.setItem('cm_last_export', now.toISOString());
+  dismissBanner();
+  showToast('Opening WhatsApp backup…');
+}
+</script>
+
+<script>
+  // ── PWA: Register Service Worker ──────────────────────────
+  // This enables offline support and "Add to Home Screen" on Android.
+  // The service worker file (sw.js) caches all app files locally.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => {
+          console.log('[App] Service Worker registered. Scope:', reg.scope);
+        })
+        .catch(err => {
+          console.warn('[App] Service Worker registration failed:', err);
+        });
+    });
+  }
+</script>
+</body>
+</html>
